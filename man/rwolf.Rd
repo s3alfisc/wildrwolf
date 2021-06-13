@@ -5,7 +5,7 @@
 \title{Function implements the Romano-Wolf multiple hypthesis correction procedure
 for objects of type fixest_multi}
 \usage{
-rwolf(models, parameter, B, cluster, seed)
+rwolf(models, parameter, B, seed = NULL)
 }
 \arguments{
 \item{models}{An object of type fixest_multo}
@@ -13,9 +13,6 @@ rwolf(models, parameter, B, cluster, seed)
 \item{parameter}{The regression parameter to be tested}
 
 \item{B}{The number of bootstrap iterations}
-
-\item{cluster}{A character vector for clustered standard errors. If NULL, no
-clustering is employed}
 
 \item{seed}{Integer. Sets the random seed}
 }

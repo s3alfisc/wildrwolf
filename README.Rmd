@@ -28,4 +28,27 @@ devtools::install_github("s3alfisc/rwolf")
 ```
 ## Example
 
-TBA
+```{r}
+library(fixest)
+library(rwolf)
+
+set.seed(123)
+N <- 1000
+X1 <- rnorm(N)
+Y1 <- 1 + 0.2 * X1 + rnorm(N)
+Y2 <- 1 + 0.1 * X1 + rnorm(N)
+cluster <- rep(1:50, 1000 / 50)
+
+data <- data.frame(Y1 = Y1, 
+                   Y2 = Y2, 
+                   X1 = X1, 
+                   cluster = cluster)
+
+res <- feols(c(Y1, Y2) ~ X1, data = data, cluster = ~ cluster)
+class(res)
+summary(res)
+
+rwolf_res <- rwolf(models = res, parameter = "X1", B = 100)
+summary.rwolf(rwolf_res)
+```
+
