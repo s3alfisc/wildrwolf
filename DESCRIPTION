@@ -1,0 +1,15 @@
+Package: rwolf
+Type: Package
+Title: Romano-Wolf corrected p-values for objects of type fixest_multi
+Version: 0.1.0
+Author: Alexander Fischer
+Maintainer: Alexander Fischer <alexander-fischer1801@t-online.de>
+Description: Romano-Wolf corrected p-values for objects of type fixest_multi
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports: 
+  fixest, 
+  data.table, 
+  progress
