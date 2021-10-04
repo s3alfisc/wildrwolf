@@ -12,4 +12,8 @@ RoxygenNote: 7.1.1
 Imports: 
   fixest, 
   data.table, 
-  progress
+  progress, 
+  fwildclusterboot, 
+  rlang
+Suggests: tinytest, 
+          RStata

@@ -2,10 +2,17 @@
 % Please edit documentation in R/rwolf.R
 \name{rwolf}
 \alias{rwolf}
-\title{Function implements the Romano-Wolf multiple hypthesis correction procedure
-for objects of type fixest_multi}
+\title{Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
+Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. Both pairs cluster bootstrap and wild cluster bootstrap are supported. For the wild cluster bootstrap, 
+the null is currently always imposed. Note that for a small number of clusters, using the wild cluster bootstrap will be much faster. 
+Author: Alexander Fischer
+Acknowledgements: 
+The code behind `rwolf()` heavily relies on code written by 
+- Martin Spindler and
+- Alan Fernihough. 
+See appropriately commented sections in the code.}
 \usage{
-rwolf(models, parameter, B, seed = NULL)
+rwolf(models, parameter, B, seed = NULL, type = "pairs", ...)
 }
 \arguments{
 \item{models}{An object of type fixest_multo}
@@ -15,8 +22,52 @@ rwolf(models, parameter, B, seed = NULL)
 \item{B}{The number of bootstrap iterations}
 
 \item{seed}{Integer. Sets the random seed}
+
+\item{type}{The type of the bootstrap to use. The ´pairs´ bootstrap by default. "wild" runs a wild cluster bootstrap.}
+
+\item{...}{additional function values passed to the bootstrap function.}
 }
 \description{
-Function implements the Romano-Wolf multiple hypthesis correction procedure
-for objects of type fixest_multi
+Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
+Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. Both pairs cluster bootstrap and wild cluster bootstrap are supported. For the wild cluster bootstrap, 
+the null is currently always imposed. Note that for a small number of clusters, using the wild cluster bootstrap will be much faster. 
+Author: Alexander Fischer
+Acknowledgements: 
+The code behind `rwolf()` heavily relies on code written by 
+- Martin Spindler and
+- Alan Fernihough. 
+See appropriately commented sections in the code.
+}
+\examples{
+ 
+library(fixest)
+library(rwolf)
+
+set.seed(12345)
+
+N <- 1000
+X1 <- rnorm(N)
+Y1 <- 1 + 1 * X1 + rnorm(N)
+Y2 <- 1 + 0.01 * X1 + rnorm(N)
+Y3 <- 1 + 0.01 * X1 + rnorm(N)
+Y4 <- 1 + 0.01 * X1 + rnorm(N)
+
+B <- 100
+# intra-cluster correlation of 0 for all clusters
+cluster <- rep(1:50, N / 50)
+
+data <- data.frame(Y1 = Y1, 
+                   Y2 = Y2, 
+                   Y3 = Y3, 
+                   Y4 = Y4,
+                   X1 = X1, 
+                   cluster = cluster)
+
+res <- feols(c(Y1, Y2, Y3, Y4) ~ X1, data = data, cluster = ~ cluster)
+res_rwolf <- rwolf(models = res, parameter = "X1", B = B, type = NULL)
+summary(res_rwolf)
+
+}
+\references{
+Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
 }
