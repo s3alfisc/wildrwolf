@@ -1,21 +1,16 @@
-rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
+rwolf <- function(models, param, B, type = NULL, seed = NULL, ...){
 
+  #' Romano-Wolf multiple hypotheses adjusted p-values 
+  #' 
   #' Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
   #' Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. Both pairs cluster bootstrap and wild cluster bootstrap are supported. For the wild cluster bootstrap, 
   #' the null is currently always imposed. Note that for a small number of clusters, using the wild cluster bootstrap will be much faster. 
-  #' Author: Alexander Fischer
-  #' Acknowledgements: 
-  #' The code behind `rwolf()` heavily relies on code written by 
-  #' - Martin Spindler and
-  #' - Alan Fernihough. 
-  #' See appropriately commented sections in the code. 
   #' @param models An object of type fixest_multo
-  #' @param parameter The regression parameter to be tested
+  #' @param param The regression param to be tested
   #' @param B The number of bootstrap iterations
-  #' @param type The type of the bootstrap to use. The ´pairs´ bootstrap by default. "wild" runs a wild cluster bootstrap.
+  #' @param type The type of the bootstrap to use. Needs to be NULL or "wild". Both options will runs a wild cluster bootstrap.
   #' @param seed Integer. Sets the random seed
   #' @param ... additional function values passed to the bootstrap function. 
-  #' @import progress
   #' @import fwildclusterboot 
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
@@ -47,14 +42,19 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
   #'                    cluster = cluster)
   #' 
   #' res <- feols(c(Y1, Y2, Y3, Y4) ~ X1, data = data, cluster = ~ cluster)
-  #' res_rwolf <- rwolf(models = res, parameter = "X1", B = B, type = NULL)
+  #' res_rwolf <- rwolf(models = res, param = "X1", B = B)
   #' summary(res_rwolf)
   #' 
   #' @references 
   #' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
 
 
-  if(!(type %in% c("pairs", "wild"))){
+  if(is.null(type)){
+    type <- "wild"
+  }
+  
+  #if(!(type %in% c("pairs", "wild"))){
+  if(!(type %in% "wild")){
     stop("The only supported bootstrap types are ´pairs´ & ´wild´.")
   }
   
@@ -68,8 +68,8 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
     stop("The object models needs to be of type fixest_multi.")
   }
 
-  if(length(parameter) != 1){
-    stop("rwolf() currently only works for parameters of length 1.")
+  if(length(param) != 1){
+    stop("rwolf() currently only works for param values of length 1.")
   }
 
   if(is.null(seed)){
@@ -97,83 +97,83 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
     message("No clustering variable specified in fixest_multi. Therefore, the bootstrap resamples at the individual level.")
     data$cluster <- 1:N
     cluster_vec <- unique(data$cluster)
-    n_clusters <- length(cluster_vec)
+    G <- length(cluster_vec)
   } else{
-    cluster_vec <- unique(data[, cluster])
-    n_clusters <- length(cluster_vec)
+    cluster_vec <- unique(data[, cluster]) # vector, collects unique clusters
+    G <- length(cluster_vec)      # number of unique clusters
   }
   
-  # if(dim(cluster_vec)[1] > 1){
-  #   stop("Currently, `rwolf()` only supports oneway clustering.")
-  # }
+  if(length(cluster) > 1){
+   stop("Currently, `rwolf()` only supports oneway clustering.")
+  }
 
-  number_clusters <- length(unique(cluster_vec))
-  if(type == "pairs" && number_clusters < 500){
-    message(paste("The number of clusters is relatively small with", number_clusters, "clusters. Note that for such a small number of clusters, the wild cluster bootstrap might be significantly faster than the pairs bootstrap."))
+  # number_clusters <- length(unique(cluster_vec))
+  if(type == "pairs" && G < 500 && B > 999){
+    message(paste("The number of clusters is relatively small with", G, "clusters. Note that for such a small number of clusters, the wild cluster bootstrap might be significantly faster than the pairs bootstrap."))
   }
   
   set.seed(seed)
   call <- models[[1]]$call
   depvars <- names(models)
   S <- length(models)
-  data <- as.data.frame(eval(models[[1]]$call$data))
+  data <- as.data.frame(eval(models[[1]]$call$data))            # data needs to be pre-processed
+  # additional cleaning steps required -> all cluster variables and fixed effects in model should be factors (this is what fixest does)
   N <- dim(data)[1]
 
   # function to get statistics from fixest_multi
   get_stats_fixest <- function(x, stat){
-    res <- fixest::coeftable(models[lhs = x])[which(rownames(fixest::coeftable(models[lhs = x])) == parameter), stat]
+    res <- fixest::coeftable(models[lhs = x])[which(rownames(fixest::coeftable(models[lhs = x])) == param), stat]
     res
   }
 
   # S statistics from the "non-bootstrap" original estimations - absolute values
   # absolute values for two-sided test statistics
   
+  # no absolute values for coefs, ses 
+  coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
+  ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
+  # absolute value for t-stats
   t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
-  coefs <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate"))))
-  ses <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error"))))
-
+  # t_stats <- abs(coefs / ses)
+  
+  
   if(type == "pairs"){
-    # bootstrap function:
-    boot_function <- function(data, x){
-      
-      pb$tick()
-      
-      boot_data <- data[x, ]
-      res <- list()
-      
-      # just pick the first model's call - it is the same for all list elements in fixest_multi
-      boot_call <- models[[1]]
-      # switch the "data" in the models estimation call
-      boot_call$call$data <- quote(boot_data)
-      # evaluate models' call with bootstrap sample
-      boot_est <- eval(boot_call$call)
-      res[["boot_coefs"]] <- unlist(lapply(1:S, function(s) fixest::coeftable(boot_est[lhs = s])[which(rownames(fixest::coeftable(boot_est[lhs = s])) == parameter), "Estimate"]))
-      res[["boot_ses"]] <- unlist(lapply(1:S, function(s) fixest::coeftable(boot_est[lhs = s])[which(rownames(fixest::coeftable(boot_est[lhs = s])) == parameter), "Std. Error"]))
-      # calculate re-centered bootstrap t-stats
-      res[["boot_t_stats"]] <- abs(res[["boot_coefs"]] - coefs) / res[["boot_ses"]]
-      # gc() as fixest_multi can be a very large object
-      gc()
-      res
-    }
-    
-    # initiate progress bar:
-    pb <- progress::progress_bar$new(total = B)
-    pb$tick(0)
-    
+
     # run the bootstrap:
     # note: this code part very closely follows code by Alan Fernihough
     # code at https://diffuseprior.wordpress.com/about/B, S
-    boot_coefs <- boot_ses <- boot_t_stats <- matrix(NA, B, S) 
+    boot_coefs <- boot_ses <- matrix(NA, B, S) 
     
+    # just pick the first model's call - it is the same for all list elements in fixest_multi
+    #call <- models[[1]]$call
+    # boot_call <- models[[1]]
+    # switch the "data" in the models estimation call
+    #call$data <- quote(boot_data)  
+    
+    model_call <- models[[1]]$call
+    #fml_new <- quote(eval(depvars[x]))
+    model_call <- rlang::call_modify(model_call, data = quote(boot_data)) 
+
     for(b in 1:B){
-      units <- sample(cluster_vec, n_clusters, TRUE)
-      df.bs <- sapply(units, function(x) which(data[, cluster] == x))
-      x <- unlist(df.bs)
-      res <- boot_function(data = data, x = x)
-      boot_coefs[b, ] <- res$boot_coefs
-      boot_ses[b, ] <- res$boot_ses
-      boot_t_stats[b, ] <- res$boot_t_stats
+      # create bootstrap cluster vector & new bootstrap data
+      units <- sample(cluster_vec, G, TRUE)
+      df.bs <- lapply(units, function(x) which(data[, cluster] == x)) # index of obs to keep
+      x <- unlist(df.bs)                                           
+      boot_data <- data[x,]
+      
+      # evaluate models' call with bootstrap sample
+      boot_est <- eval(model_call)
+      boot_coefs[b,] <- unlist(lapply(1:S, function(s) fixest::coeftable(boot_est[lhs = s])[which(rownames(fixest::coeftable(boot_est[lhs = s])) == param), "Estimate"]))
+      boot_ses[b,] <- unlist(lapply(1:S, function(s) fixest::coeftable(boot_est[lhs = s])[which(rownames(fixest::coeftable(boot_est[lhs = s])) == param), "Std. Error"]))
     }
+    # calculate re-centered bootstrap t-stats (boot_coefs are centered around )
+    boot_t_stats <-   abs( t(t(boot_coefs) - coefs) / boot_ses)
+    
+      
+    if(any(boot_t_stats < 0) || any(t_stats < 0)){
+      stop("There are negative boot_t_stats.")
+    }
+    
   } else if (type == "wild"){
     
     # repeat line: for multiway clustering, it is not clear how many bootstrap 
@@ -195,7 +195,7 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
         res <- suppressMessages(
           fwildclusterboot:::boottest.fixest(object = model, 
                                                   clustid = cluster, 
-                                                  param = parameter, 
+                                                  param = param, 
                                                   B = B, 
                                                   conf_int = FALSE, 
                                                   impose_null = TRUE)
@@ -213,7 +213,7 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
         
         res <- fwildclusterboot:::boottest.fixest(object = model, 
                                                   clustid = cluster, 
-                                                  param = parameter, 
+                                                  param = param, 
                                                   B = B, 
                                                   conf_int = FALSE, 
                                                   impose_null = FALSE)
@@ -266,7 +266,7 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
   models_info <- data.table::rbindlist(
     lapply(1:S, function(x){
       tmp <- coeftable(models[[x]])
-      tmp1 <- tmp[which(rownames(tmp) == parameter),]
+      tmp1 <- tmp[which(rownames(tmp) == param),]
       tmp1$depvar <- as.character(models[[x]]$fml[[2]])
       tmp1
     })
@@ -280,7 +280,7 @@ rwolf <- function(models, parameter, B, seed = NULL, type = "pairs", ...){
     call = call,
     models_info = models_info,
     coefs = coefs,
-    ses = ses,
+    # ses = ses,
     t_stats = t_stats,
     boot_coefs = boot_coefs,
     boot_ses = boot_ses,
