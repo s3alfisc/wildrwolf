@@ -1,4 +1,4 @@
-rwolf <- function(models, param, B, seed, package = "fwildclusterboot", ...){
+rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -8,11 +8,13 @@ rwolf <- function(models, param, B, seed, package = "fwildclusterboot", ...){
   #' @param models An object of type fixest_multi
   #' @param param The regression param to be tested
   #' @param B The number of bootstrap iterations
-  #' @param seed Integer. Sets the random seed
+  #' @param seed Integer. Sets the random seed. NULL by default. 
+  #' @param package Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default
   #' @param ... additional function values passed to the bootstrap function. 
   
   #' @import fwildclusterboot 
   #' @import wildboottestjlr
+  #' 
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @export
@@ -54,8 +56,10 @@ rwolf <- function(models, param, B, seed, package = "fwildclusterboot", ...){
     stop("The object models needs to be of type fixest_multi.")
   }
   
-  set.seed(seed)
-  
+  if(!is.null(seed)){
+    set.seed(seed)
+  }
+
   # get the model call
   call <- models[[1]]$call
   # get the name of the dependent variables

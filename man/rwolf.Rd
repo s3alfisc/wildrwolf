@@ -4,25 +4,25 @@
 \alias{rwolf}
 \title{Romano-Wolf multiple hypotheses adjusted p-values}
 \usage{
-rwolf(models, param, B, type = NULL, seed = NULL, ...)
+rwolf(models, param, B, seed = NULL, package = "fwildclusterboot", ...)
 }
 \arguments{
-\item{models}{An object of type fixest_multo}
+\item{models}{An object of type fixest_multi}
 
 \item{param}{The regression param to be tested}
 
 \item{B}{The number of bootstrap iterations}
 
-\item{type}{The type of the bootstrap to use. Needs to be NULL or "wild". Both options will runs a wild cluster bootstrap.}
+\item{seed}{Integer. Sets the random seed. NULL by default.}
 
-\item{seed}{Integer. Sets the random seed}
+\item{package}{Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
 \description{
 Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
-Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. Both pairs cluster bootstrap and wild cluster bootstrap are supported. For the wild cluster bootstrap, 
-the null is currently always imposed. Note that for a small number of clusters, using the wild cluster bootstrap will be much faster.
+Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. For the wild cluster bootstrap, 
+the null is always imposed.
 }
 \examples{
  

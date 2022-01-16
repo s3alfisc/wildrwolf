@@ -51,20 +51,20 @@ data <- data.frame(Y1 = Y1,
 res <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2, 
              data = data,
              cluster = ~ group_id, 
-             dof = dof(cluster.adj = TRUE))
+             ssc = ssc(cluster.adj = TRUE))
 
 # clean workspace except for res & data
 rm(list= ls()[!(ls() %in% c('res','data'))])
 
-res_rwolf <- rwolf(models = res, param = "X1", B = 1000)
+res_rwolf <- rwolf(models = res, param = "X1", B = 9999)
 summary(res_rwolf)
 #> feols(fml = c(Y1, Y2, Y3, Y4) ~ X1 + X2, data = data, cluster = ~group_id, 
-#>     dof = dof(cluster.adj = TRUE))
+#>     ssc = ssc(cluster.adj = TRUE))
 #>   depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
-#> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168 0.000999001
-#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01 0.408591409
-#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01 0.408591409
-#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02 0.119880120
+#> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
+#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4142
+#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4142
+#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1161
 ```
 
 How does it compare to results from the `rwolf` Stata package?
@@ -86,6 +86,7 @@ set seed 1
 rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots
 "
 RStata::stata(stata_program, data.out = TRUE)
+
 #> . 
 #> . clear 
 #> . set more off
