@@ -69,7 +69,22 @@ summary(res_rwolf)
 
 ```
 
-How does it compare to results from the `rwolf` Stata package? 
+## Performance
+
+Using the wild cluster bootstrap implementations in `fwildclusterboot` and `wildboottestjlr` is fast: 
+
+```{r, eval = FALSE}
+microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, package = "fwildclusterboot"),
+                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, package = "wildboottestjlr"),
+                               times = 1)
+# Unit: seconds
+# expr         min       lq       mean    median    uq       max    neval
+# res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1
+# res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1
+```
+
+
+## Comparison with Stata's rwolf package 
 
 ```{r, eval = FALSE}
 library(RStata)

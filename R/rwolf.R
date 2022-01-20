@@ -1,4 +1,4 @@
-rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", ...){
+rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_type = "rademacher", seed = NULL, package = "fwildclusterboot", ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -7,7 +7,19 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
   #' the null is always imposed.
   #' @param models An object of type fixest_multi
   #' @param param The regression param to be tested
+  #' @param R Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
+  #' @param beta0 A numeric. Shifts the null hypothesis 
+  #'        H0: param = beta0 vs H1: param != beta0  
   #' @param B The number of bootstrap iterations
+  #' @param test_type Character vector of length 1. Type of hypothesis test 
+  #'        By default "two-tailed". Other options include "equal-tailed", ">" and "<". 
+  #' @param weights_type character or function. The character string specifies the type
+  #'                     of boostrap to use: One of "rademacher", "mammen", "norm"
+  #'                     and "webb". Alternatively, type can be a function(n) for drawing 
+  #'                     wild bootstrap factors. "rademacher" by default.  
+  #'                     For the Rademacher distribution, if the number of replications B exceeds 
+  #'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
+  #'                     will use each possible combination once (enumeration).               
   #' @param seed Integer. Sets the random seed. NULL by default. 
   #' @param package Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default
   #' @param ... additional function values passed to the bootstrap function. 
@@ -16,6 +28,7 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
   #' 
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
+  #' @importFrom dreamerr check_arg
   #' @export
   #' 
   #' @examples
@@ -49,6 +62,17 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
   #' 
   #' @references 
   #' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
+  
+  
+  dreamerr::check_arg(models, "class(fixest_multi)")
+  dreamerr::check_arg(param, "character vector | character scalar")
+  dreamerr::check_arg(R, "numeric vector")
+  dreamerr::check_arg(beta0, "numeric scalar")
+  dreamerr::check_arg(test_type, "charin(two_sided, >, <)")
+  dreamerr::check_arg(B, "integer scalar GT{99}")
+  dreamerr::check_arg(seed, "integer scalar | NULL")
+  dreamerr::check_arg(package, "charin(fwildclusterboot, wildboottestjlr)")
+  
   
   # Check if 'models' is of type fixest_multi
   if(!inherits(models, "fixest_multi")){

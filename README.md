@@ -62,12 +62,27 @@ summary(res_rwolf)
 #>     ssc = ssc(cluster.adj = TRUE))
 #>   depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4142
-#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4142
-#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1161
+#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4136
+#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4136
+#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1121
 ```
 
-How does it compare to results from the `rwolf` Stata package?
+## Performance
+
+Using the wild cluster bootstrap implementations in `fwildclusterboot`
+and `wildboottestjlr` is fast:
+
+``` r
+microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, package = "fwildclusterboot"),
+                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, package = "wildboottestjlr"),
+                               times = 1)
+# Unit: seconds
+# expr         min       lq       mean    median    uq       max    neval
+# res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1
+# res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1
+```
+
+## Comparison with Stata’s rwolf package
 
 ``` r
 library(RStata)
