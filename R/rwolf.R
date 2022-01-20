@@ -12,8 +12,7 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
   #' @param package Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default
   #' @param ... additional function values passed to the bootstrap function. 
   
-  #' @import fwildclusterboot 
-  #' @import wildboottestjlr
+  #' @import fwildclusterboot wildboottestjlr
   #' 
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
@@ -107,7 +106,7 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
     
     if(package == "fwildclusterboot"){
       res <- suppressMessages(
-        fwildclusterboot:::boottest.fixest(object = model, 
+        fwildclusterboot::boottest.fixest(object = model, 
                                            clustid = cluster, 
                                            param = param, 
                                            B = B, 
@@ -116,7 +115,7 @@ rwolf <- function(models, param, B, seed = NULL, package = "fwildclusterboot", .
       )
     } else if(package == "wildboottestjlr"){
       res <- suppressMessages(
-        wildboottestjlr:::boottest.fixest(object = model, 
+        wildboottestjlr::boottest.fixest(object = model, 
                                           clustid = cluster, 
                                           param = param, 
                                           B = B, 
@@ -417,7 +416,7 @@ summary.rwolf <- function(object, digits = 3, ...){
 #'         model$call <- rlang::call_modify(model$call, cluster = NULL)
 #'         
 #'         res <- suppressMessages(
-#'           fwildclusterboot:::boottest.fixest(object = model, 
+#'           fwildclusterboot::boottest.fixest(object = model, 
 #'                                              clustid = cluster, 
 #'                                              param = param, 
 #'                                              B = B, 
@@ -435,7 +434,7 @@ summary.rwolf <- function(object, digits = 3, ...){
 #'         model$call <- rlang::call_modify(model$call, cluster = NULL)
 #'         
 #'         
-#'         res <- fwildclusterboot:::boottest.fixest(object = model, 
+#'         res <- fwildclusterboot::boottest.fixest(object = model, 
 #'                                                   clustid = cluster, 
 #'                                                   param = param, 
 #'                                                   B = B, 
