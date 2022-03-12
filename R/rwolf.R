@@ -1,4 +1,4 @@
-rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_type = "rademacher", seed = NULL, package = "fwildclusterboot", ...){
+rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_type = "rademacher", seed = NULL, boot_algo = "R", ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -21,11 +21,10 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   #'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
   #'                     will use each possible combination once (enumeration).               
   #' @param seed Integer. Sets the random seed. NULL by default. 
-  #' @param package Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default
+  #' @param boot_algo Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
   #' @param ... additional function values passed to the bootstrap function. 
   
-  #' @import fwildclusterboot wildboottestjlr
-  #' 
+  #' @import fwildclusterboot
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @importFrom dreamerr check_arg
@@ -34,7 +33,7 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   #' @examples
   #'  
   #' library(fixest)
-  #' library(rwolf)
+  #' library(wildrwolf)
   #' 
   #' set.seed(12345)
   #' 
@@ -64,14 +63,13 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   #' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
   
   
-  dreamerr::check_arg(models, "class(fixest_multi)")
-  dreamerr::check_arg(param, "character vector | character scalar")
-  dreamerr::check_arg(R, "numeric vector")
-  dreamerr::check_arg(beta0, "numeric scalar")
-  dreamerr::check_arg(test_type, "charin(two_sided, >, <)")
-  dreamerr::check_arg(B, "integer scalar GT{99}")
-  dreamerr::check_arg(seed, "integer scalar | NULL")
-  dreamerr::check_arg(package, "charin(fwildclusterboot, wildboottestjlr)")
+  check_arg(param, "character vector | character scalar")
+  check_arg(R, "numeric vector")
+  check_arg(beta0, "numeric scalar")
+  check_arg(test_type, "charin(two_sided, >, <)")
+  check_arg(B, "integer scalar GT{99}")
+  check_arg(seed, "integer scalar | NULL")
+  check_arg(boot_algo, "charin(R, WildBootTests.jl)")
   
   
   # Check if 'models' is of type fixest_multi
@@ -128,23 +126,24 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
     model$call <- rlang::call_modify(model$call, fml = model$fml)
     model$call <- rlang::call_modify(model$call, cluster = NULL)
     
-    if(package == "fwildclusterboot"){
+    if(boot_algo == "R"){
       res <- suppressMessages(
-        fwildclusterboot::boottest.fixest(object = model, 
-                                           clustid = cluster, 
-                                           param = param, 
-                                           B = B, 
-                                           conf_int = FALSE, 
-                                           impose_null = TRUE)
+        boottest(object = model, 
+                 clustid = cluster, 
+                 param = param, 
+                 B = B, 
+                 conf_int = FALSE, 
+                 impose_null = TRUE)
       )
-    } else if(package == "wildboottestjlr"){
+    } else if(boot_algo == "WildBootTests.jl"){
       res <- suppressMessages(
-        wildboottestjlr::boottest.fixest(object = model, 
-                                          clustid = cluster, 
-                                          param = param, 
-                                          B = B, 
-                                          conf_int = FALSE, 
-                                          impose_null = TRUE)
+        boottest(object = model, 
+                clustid = cluster, 
+                param = param, 
+                B = B, 
+                conf_int = FALSE, 
+                impose_null = TRUE, 
+                boot_algo = "WildBootTests.jl")
       )
     }
     
@@ -236,6 +235,7 @@ summary.rwolf <- function(object, digits = 3, ...){
   #' Summary method for objects of type rwolf
   #' @param object An object of type rwolf
   #' @param digits Rounding of digits
+  #' @param ... misc. function arguments
   #' @export
   stopifnot(inherits(object,"rwolf"))
   call <- object$call

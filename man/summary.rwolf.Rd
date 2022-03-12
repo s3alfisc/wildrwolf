@@ -10,6 +10,8 @@
 \item{object}{An object of type rwolf}
 
 \item{digits}{Rounding of digits}
+
+\item{...}{misc. function arguments}
 }
 \description{
 Summary method for objects of type rwolf

@@ -4,18 +4,45 @@
 \alias{rwolf}
 \title{Romano-Wolf multiple hypotheses adjusted p-values}
 \usage{
-rwolf(models, param, B, seed = NULL, package = "fwildclusterboot", ...)
+rwolf(
+  models,
+  param,
+  R,
+  beta0,
+  B,
+  test_type = "two-sided",
+  weights_type = "rademacher",
+  seed = NULL,
+  boot_algo = "R",
+  ...
+)
 }
 \arguments{
 \item{models}{An object of type fixest_multi}
 
 \item{param}{The regression param to be tested}
 
+\item{R}{Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.}
+
+\item{beta0}{A numeric. Shifts the null hypothesis 
+H0: param = beta0 vs H1: param != beta0}
+
 \item{B}{The number of bootstrap iterations}
+
+\item{test_type}{Character vector of length 1. Type of hypothesis test 
+By default "two-tailed". Other options include "equal-tailed", ">" and "<".}
+
+\item{weights_type}{character or function. The character string specifies the type
+of boostrap to use: One of "rademacher", "mammen", "norm"
+and "webb". Alternatively, type can be a function(n) for drawing 
+wild bootstrap factors. "rademacher" by default.  
+For the Rademacher distribution, if the number of replications B exceeds 
+the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
+will use each possible combination once (enumeration).}
 
 \item{seed}{Integer. Sets the random seed. NULL by default.}
 
-\item{package}{Should the wild cluster bootstrap run via fwildclusterboot or wildboottestjlr? fwildclusterboot by default}
+\item{boot_algo}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
@@ -27,7 +54,7 @@ the null is always imposed.
 \examples{
  
 library(fixest)
-library(rwolf)
+library(wildrwolf)
 
 set.seed(12345)
 

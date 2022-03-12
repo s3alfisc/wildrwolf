@@ -13,9 +13,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# rwolf
+# wildrwolf
 
-The `rwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest_multi` from the `fixest` package (currently for one-way clustered inference) via a wild cluster bootstrap. At its current stage, the package is highly experimental and it is not thoroughly tested.
+The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest_multi` from the `fixest` package (currently for one-way clustered inference) via a wild cluster bootstrap. At its current stage, the package is highly experimental and it is not thoroughly tested.
+
+Adding support for the heteroskedastic wild bootstrap and multi-way clustering is work in progress.
 
 ## Installation
 
@@ -23,7 +25,7 @@ You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("s3alfisc/rwolf")
+devtools::install_github("s3alfisc/wildrwolf")
 ```
 
 ## Example
@@ -32,7 +34,7 @@ devtools::install_github("s3alfisc/rwolf")
 
 ```{r, warning=FALSE, message = FALSE}
 library(fixest)
-library(rwolf)
+library(wildrwolf)
 
 set.seed(8)
 N <- 10000
@@ -71,11 +73,11 @@ summary(res_rwolf)
 
 ## Performance
 
-Using the wild cluster bootstrap implementations in `fwildclusterboot` and `wildboottestjlr` is fast: 
+Using the wild cluster bootstrap implementations in `fwildclusterboot` is fast: 
 
 ```{r, eval = FALSE}
-microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, package = "fwildclusterboot"),
-                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, package = "wildboottestjlr"),
+microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "R"),
+                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "WildBootTests.jl"),
                                times = 1)
 # Unit: seconds
 # expr         min       lq       mean    median    uq       max    neval

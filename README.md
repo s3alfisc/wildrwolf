@@ -1,13 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rwolf
+# wildrwolf
 
-The `rwolf` package implements Romano-Wolf multiple-hypothesis-adjusted
-p-values for objects of type `fixest_multi` from the `fixest` package
-(currently for one-way clustered inference) via a wild cluster
-bootstrap. At its current stage, the package is highly experimental and
-it is not thoroughly tested.
+The `wildrwolf` package implements Romano-Wolf
+multiple-hypothesis-adjusted p-values for objects of type `fixest_multi`
+from the `fixest` package (currently for one-way clustered inference)
+via a wild cluster bootstrap. At its current stage, the package is
+highly experimental and it is not thoroughly tested.
+
+Adding support for the heteroskedastic wild bootstrap and multi-way
+clustering is work in progress.
 
 ## Installation
 
@@ -16,7 +19,7 @@ You can install the development version from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("s3alfisc/rwolf")
+devtools::install_github("s3alfisc/wildrwolf")
 ```
 
 ## Example
@@ -25,7 +28,7 @@ devtools::install_github("s3alfisc/rwolf")
 
 ``` r
 library(fixest)
-library(rwolf)
+library(wildrwolf)
 
 set.seed(8)
 N <- 10000
@@ -62,19 +65,19 @@ summary(res_rwolf)
 #>     ssc = ssc(cluster.adj = TRUE))
 #>   depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4136
-#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4136
-#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1121
+#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4186
+#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4186
+#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1144
 ```
 
 ## Performance
 
 Using the wild cluster bootstrap implementations in `fwildclusterboot`
-and `wildboottestjlr` is fast:
+is fast:
 
 ``` r
-microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, package = "fwildclusterboot"),
-                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, package = "wildboottestjlr"),
+microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "R"),
+                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "WildBootTests.jl"),
                                times = 1)
 # Unit: seconds
 # expr         min       lq       mean    median    uq       max    neval

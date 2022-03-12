@@ -3,6 +3,6 @@
 S3method(summary,rwolf)
 export(rwolf)
 import(fwildclusterboot)
-import(wildboottestjlr)
 importFrom(data.table,rbindlist)
+importFrom(dreamerr,check_arg)
 importFrom(fixest,coeftable)
