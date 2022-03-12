@@ -13,6 +13,15 @@ knitr::opts_chunk$set(
 )
 ```
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/s3alfisc/rwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/rwolf/actions)
+
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
+
+<!-- badges: end -->
+
+
 # wildrwolf
 
 The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest_multi` from the `fixest` package (currently for one-way clustered inference) via a wild cluster bootstrap. At its current stage, the package is highly experimental and it is not thoroughly tested.
@@ -26,6 +35,9 @@ You can install the development version from [GitHub](https://github.com/) with:
 ``` r
 # install.packages("devtools")
 devtools::install_github("s3alfisc/wildrwolf")
+
+# from r-universe (windows & mac, compiled R > 4.0 required)
+install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 ```
 
 ## Example

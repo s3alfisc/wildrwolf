@@ -1,5 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/s3alfisc/rwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/rwolf/actions)
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
+
+<!-- badges: end -->
 
 # wildrwolf
 
@@ -20,6 +29,9 @@ You can install the development version from
 ``` r
 # install.packages("devtools")
 devtools::install_github("s3alfisc/wildrwolf")
+
+# from r-universe (windows & mac, compiled R > 4.0 required)
+install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 ```
 
 ## Example
@@ -65,9 +77,9 @@ summary(res_rwolf)
 #>     ssc = ssc(cluster.adj = TRUE))
 #>   depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4186
-#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4186
-#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1144
+#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4195
+#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4195
+#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1204
 ```
 
 ## Performance
