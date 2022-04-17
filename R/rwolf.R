@@ -1,4 +1,4 @@
-rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_type = "rademacher", seed = NULL, boot_algo = "R", ...){
+rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -22,6 +22,7 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   #'                     will use each possible combination once (enumeration).               
   #' @param seed Integer. Sets the random seed. NULL by default. 
   #' @param boot_algo Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
+  #' @param nthreads Integer. The number of threads to use. 
   #' @param ... additional function values passed to the bootstrap function. 
   
   #' @import fwildclusterboot
@@ -64,12 +65,13 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   
   
   check_arg(param, "character vector | character scalar")
-  check_arg(R, "numeric vector")
-  check_arg(beta0, "numeric scalar")
+  check_arg(R, "NULL | numeric vector")
+  check_arg(beta0, "NULL | numeric scalar")
   check_arg(test_type, "charin(two_sided, >, <)")
   check_arg(B, "integer scalar GT{99}")
   check_arg(seed, "integer scalar | NULL")
-  check_arg(boot_algo, "charin(R, WildBootTests.jl)")
+  check_arg(boot_algo, "charin(R, R-lean, WildBootTests.jl)")
+  check_arg(nthreads, "scalar integer")
   
   
   # Check if 'models' is of type fixest_multi
@@ -96,9 +98,20 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
   cluster <- as.character(models[[1]]$call$cluster)
   cluster <- cluster[which(cluster != "~")]
   
-  # get the number of unique clusters
-  G <- length(unique(data[, cluster]))
+  if(length(cluster) == 0){
+    cluster <- NULL
+    # get the number of unique clusters
+    G <- length(unique(data[, cluster]))
+    if(boot_algo == "WildBootTests.jl"){
+      stop("The non-clustered heteroskedasticity robust wild bootstrap is
+           currently not supported for 'boot_algo == WildBootTests.jl'.")
+    }
+    heteroskedastic <- TRUE
+  } else {
+    heteroskedastic <- FALSE
+  }
   
+
   # define a function to get statistics from fixest_multi object
   get_stats_fixest <- function(x, stat){
     res <- fixest::coeftable(models[lhs = x])[which(rownames(fixest::coeftable(models[lhs = x])) == param), stat]
@@ -133,7 +146,8 @@ rwolf <- function(models, param, R, beta0, B, test_type = "two-sided", weights_t
                  param = param, 
                  B = B, 
                  conf_int = FALSE, 
-                 impose_null = TRUE)
+                 impose_null = TRUE, 
+                 nthreads = nthreads)
       )
     } else if(boot_algo == "WildBootTests.jl"){
       res <- suppressMessages(

@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# wildrwolf
+
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/s3alfisc/rwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/rwolf/actions)
-
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 
 <!-- badges: end -->
-
-# wildrwolf
 
 The `wildrwolf` package implements Romano-Wolf
 multiple-hypothesis-adjusted p-values for objects of type `fixest_multi`
@@ -71,15 +71,15 @@ res <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2,
 # clean workspace except for res & data
 rm(list= ls()[!(ls() %in% c('res','data'))])
 
-res_rwolf <- rwolf(models = res, param = "X1", B = 9999)
+res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
 summary(res_rwolf)
 #> feols(fml = c(Y1, Y2, Y3, Y4) ~ X1 + X2, data = data, cluster = ~group_id, 
 #>     ssc = ssc(cluster.adj = TRUE))
 #>   depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4195
-#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4195
-#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1204
+#> 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4114
+#> 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4114
+#> 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1160
 ```
 
 ## Performance
