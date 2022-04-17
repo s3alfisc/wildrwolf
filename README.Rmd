@@ -39,7 +39,7 @@ devtools::install_github("s3alfisc/wildrwolf")
 install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 ```
 
-## Example
+## Example I
 
 <!-- As you can see in the example, there seems to be a bug in `rwolf()` for the pairs bootstrap. -->
 
@@ -79,6 +79,19 @@ rm(list= ls()[!(ls() %in% c('res','data'))])
 res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
 summary(res_rwolf)
 
+
+```
+## Example II 
+
+```{r}
+base = iris
+names(base) = c("y1", "y2", "x1", "x2", "species")
+
+res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw0(species), base)
+
+res_rwolf2 <- rwolf(models = res_multi, param = "x1", B = 9999, nthreads = 2)
+
+summary(res_rwolf2)
 
 ```
 

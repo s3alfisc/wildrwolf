@@ -8,8 +8,8 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
   #' @param models An object of type fixest_multi
   #' @param param The regression param to be tested
   #' @param R Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
-  #' @param beta0 A numeric. Shifts the null hypothesis 
-  #'        H0: param = beta0 vs H1: param != beta0  
+  #' @param r A numeric. Shifts the null hypothesis 
+  #'        H0: param = r vs H1: param != r  
   #' @param B The number of bootstrap iterations
   #' @param test_type Character vector of length 1. Type of hypothesis test 
   #'        By default "two-tailed". Other options include "equal-tailed", ">" and "<". 
@@ -25,7 +25,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
   #' @param nthreads Integer. The number of threads to use. 
   #' @param ... additional function values passed to the bootstrap function. 
   
-  #' @import fwildclusterboot
+  #' @importFrom fwildclusterboot boottest
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @importFrom dreamerr check_arg
@@ -66,7 +66,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
   
   check_arg(param, "character vector | character scalar")
   check_arg(R, "NULL | numeric vector")
-  check_arg(beta0, "NULL | numeric scalar")
+  check_arg(r, "NULL | numeric scalar")
   check_arg(test_type, "charin(two_sided, >, <)")
   check_arg(B, "integer scalar GT{99}")
   check_arg(seed, "integer scalar | NULL")
@@ -76,67 +76,81 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
   
   # Check if 'models' is of type fixest_multi
   if(!inherits(models, "fixest_multi")){
-    stop("The object models needs to be of type fixest_multi.")
+        stop("The object models needs to be of type 'fixest_multi' or a list of objects of type 'fixest'.")
   }
   
   if(!is.null(seed)){
     set.seed(seed)
+    dqrng::dqset.seed(seed)
   }
 
-  # get the model call
-  call <- models[[1]]$call
-  # get the name of the dependent variables
-  depvars <- names(models)
-  # get the number of tested hypotheses
-  S <- length(models)
-  # get the data frame used in the feols() call from the global environment
-  data <- as.data.frame(eval(models[[1]]$call$data))            
-  # additional cleaning steps required -> all cluster variables and fixed effects in model should be factors (this is what fixest does)
-  N <- dim(data)[1]
-  
-  # get the clustering variable
-  cluster <- as.character(models[[1]]$call$cluster)
-  cluster <- cluster[which(cluster != "~")]
-  
-  if(length(cluster) == 0){
-    cluster <- NULL
-    # get the number of unique clusters
-    G <- length(unique(data[, cluster]))
-    if(boot_algo == "WildBootTests.jl"){
-      stop("The non-clustered heteroskedasticity robust wild bootstrap is
+  models <- as.list(models)
+  #if(!all_fixest){
+    # get the model call
+    call <- models[[1]]$call
+    # get the name of the dependent variables
+    #depvars <- names(models)
+    # get the number of tested hypotheses
+    S <- length(models)
+    # get the data frame used in the feols() call from the global environment
+    data <- as.data.frame(eval(models[[1]]$call$data))            
+    # additional cleaning steps required -> all cluster variables and fixed effects in model should be factors (this is what fixest does)
+    N <- dim(data)[1]
+    
+    # get the clustering variable
+    cluster <- as.character(models[[1]]$call$cluster)
+    cluster <- cluster[which(cluster != "~")]
+    
+    if(length(cluster) == 0){
+      cluster <- NULL
+      # get the number of unique clusters
+      G <- length(unique(data[, cluster]))
+      if(boot_algo == "WildBootTests.jl"){
+        stop("The non-clustered heteroskedasticity robust wild bootstrap is
            currently not supported for 'boot_algo == WildBootTests.jl'.")
+      }
+      heteroskedastic <- TRUE
+    } else {
+      heteroskedastic <- FALSE
     }
-    heteroskedastic <- TRUE
-  } else {
-    heteroskedastic <- FALSE
-  }
+    
+    
+    # define a function to get statistics from fixest_multi object
+    get_stats_fixest <- function(x, stat){
+      res <- fixest::coeftable(models[[x]])[which(rownames(fixest::coeftable(models[[x]])) == param), stat]
+      res
+    }
+    
+    # and get coefs, t-stats and ses 
+    # no absolute values for coefs, ses 
+    coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
+    ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
+    # absolute value for t-stats
+    t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
   
+    # t_stats <- abs(coefs / ses)
+    
+    # repeat line: for multiway clustering, it is not clear how many bootstrap 
+    # test statistics will be invalied - for oneway, all vectors of length(boot_coefs) \leq B
+    boot_coefs <- boot_ses <- boot_t_stats <- matrix(NA, B, S) 
 
-  # define a function to get statistics from fixest_multi object
-  get_stats_fixest <- function(x, stat){
-    res <- fixest::coeftable(models[lhs = x])[which(rownames(fixest::coeftable(models[lhs = x])) == param), stat]
-    res
-  }
-  
-  # and get coefs, t-stats and ses 
-  # no absolute values for coefs, ses 
-  coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
-  ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
-  # absolute value for t-stats
-  t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
-  # t_stats <- abs(coefs / ses)
-  
-  # repeat line: for multiway clustering, it is not clear how many bootstrap 
-  # test statistics will be invalied - for oneway, all vectors of length(boot_coefs) \leq B
-  boot_coefs <- boot_ses <- boot_t_stats <- matrix(NA, B, S) 
-  
   # run the bootstrap via fwildclusterboot or wildboottestjlr
   for(x in 1:length(models)){
     
     model <- models[[x]]
     
     # need to recalculate "original" t-statistics with null imposed"
+    
     model$call <- rlang::call_modify(model$call, fml = model$fml)
+    # if fixed effect in model - add it as fixef arg
+    if("fixef_vars" %in% names(model)){
+      all_fes <- labels(terms(model$fml_all$fixef))
+      if(length(all_fes) != 0){
+        model$call <- rlang::call_modify(model$call, fixef = labels(terms(model$fml_all$fixef)))
+      }
+    }
+  
+    # drop the internal cluster argument
     model$call <- rlang::call_modify(model$call, cluster = NULL)
     
     if(boot_algo == "R"){
@@ -147,7 +161,9 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
                  B = B, 
                  conf_int = FALSE, 
                  impose_null = TRUE, 
-                 nthreads = nthreads)
+                 nthreads = nthreads, 
+                 R = R, 
+                 r = r)
       )
     } else if(boot_algo == "WildBootTests.jl"){
       res <- suppressMessages(
@@ -157,7 +173,9 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
                 B = B, 
                 conf_int = FALSE, 
                 impose_null = TRUE, 
-                boot_algo = "WildBootTests.jl")
+                boot_algo = "WildBootTests.jl", 
+                R = R, 
+                r = r)
       )
     }
     
@@ -214,14 +232,15 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
     lapply(1:S, function(x){
       tmp <- coeftable(models[[x]])
       tmp1 <- tmp[which(rownames(tmp) == param),]
-      tmp1$depvar <- as.character(models[[x]]$fml[[2]])
+      suppressWarnings(tmp1$depvar <- as.character(models[[x]]$fml[[2]]))
+      tmp1$model <- paste("Model", x)
       tmp1
     })
   )
   # some reordering
-  models_info <- models_info[, c(5, 1:4)]
+  models_info <- models_info[, c(6,5, 1:4)]
   models_info[, "RW Pr(>|t|)"] <- pval
-  rownames(models_info) <- depvars
+  #rownames(models_info) <- depvars
   
   res <- list(
     call = call,

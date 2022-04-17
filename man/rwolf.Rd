@@ -7,13 +7,14 @@
 rwolf(
   models,
   param,
-  R,
-  beta0,
   B,
+  R = NULL,
+  r = 0,
   test_type = "two-sided",
   weights_type = "rademacher",
   seed = NULL,
   boot_algo = "R",
+  nthreads = 1,
   ...
 )
 }
@@ -22,12 +23,12 @@ rwolf(
 
 \item{param}{The regression param to be tested}
 
+\item{B}{The number of bootstrap iterations}
+
 \item{R}{Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.}
 
-\item{beta0}{A numeric. Shifts the null hypothesis 
-H0: param = beta0 vs H1: param != beta0}
-
-\item{B}{The number of bootstrap iterations}
+\item{r}{A numeric. Shifts the null hypothesis 
+H0: param = r vs H1: param != r}
 
 \item{test_type}{Character vector of length 1. Type of hypothesis test 
 By default "two-tailed". Other options include "equal-tailed", ">" and "<".}
@@ -43,6 +44,8 @@ will use each possible combination once (enumeration).}
 \item{seed}{Integer. Sets the random seed. NULL by default.}
 
 \item{boot_algo}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
+
+\item{nthreads}{Integer. The number of threads to use.}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
