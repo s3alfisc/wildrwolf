@@ -2,7 +2,9 @@
 
 S3method(summary,rwolf)
 export(rwolf)
-import(fwildclusterboot)
 importFrom(data.table,rbindlist)
+importFrom(dqrng,dqset.seed)
 importFrom(dreamerr,check_arg)
 importFrom(fixest,coeftable)
+importFrom(fwildclusterboot,boottest)
+importFrom(stats,terms)

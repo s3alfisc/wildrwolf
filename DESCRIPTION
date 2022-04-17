@@ -14,4 +14,5 @@ Imports:
   data.table, 
   rlang, 
   fwildclusterboot, 
-  dreamerr
+  dreamerr, 
+  dqrng

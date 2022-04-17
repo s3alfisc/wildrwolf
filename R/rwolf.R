@@ -26,9 +26,11 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
   #' @param ... additional function values passed to the bootstrap function. 
   
   #' @importFrom fwildclusterboot boottest
+  #' @importFrom dqrng dqset.seed
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @importFrom dreamerr check_arg
+  #' @importFrom stats terms
   #' @export
   #' 
   #' @examples
