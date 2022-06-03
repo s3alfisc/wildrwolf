@@ -27,6 +27,8 @@ The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-va
 
 Adding support for the heteroskedastic wild bootstrap and multi-way clustering is work in progress.
 
+I hope to submit `wildrwolf` to CRAN by the end of the summer - if you would like to help me get there, please send me an email `emo::ji("smile")` 
+
 ## Installation
 
 You can install the development version from [GitHub](https://github.com/) with:
@@ -87,7 +89,7 @@ summary(res_rwolf)
 base = iris
 names(base) = c("y1", "y2", "x1", "x2", "species")
 
-res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw0(species), base)
+res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species), base)
 
 res_rwolf2 <- rwolf(models = res_multi, param = "x1", B = 9999, nthreads = 2)
 

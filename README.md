@@ -21,6 +21,10 @@ highly experimental and it is not thoroughly tested.
 Adding support for the heteroskedastic wild bootstrap and multi-way
 clustering is work in progress.
 
+I hope to submit `wildrwolf` to CRAN by the end of the summer - if you
+would like to help me get there, please send me an email
+`emo::ji("smile")`
+
 ## Installation
 
 You can install the development version from
@@ -77,9 +81,9 @@ summary(res_rwolf)
 #>     ssc = ssc(cluster.adj = TRUE))
 #>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4171
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4171
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1166
+#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4258
+#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4258
+#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1183
 ```
 
 ## Example II
@@ -88,21 +92,17 @@ summary(res_rwolf)
 base = iris
 names(base) = c("y1", "y2", "x1", "x2", "species")
 
-res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw0(species), base)
+res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species), base)
 
 res_rwolf2 <- rwolf(models = res_multi, param = "x1", B = 9999, nthreads = 2)
 
 summary(res_rwolf2)
-#> feols(fml = c(y1, y2) ~ x1 + csw(x2, x2^2) | sw0(species), data = base)
-#>     model depvar    Estimate  Std. Error    t value     Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     y1  0.54177715 0.069281794  7.8199065 9.414477e-13      0.0001
-#> 2 Model 2     y1  0.71891924 0.076210759  9.4333038 8.644048e-17      0.0001
-#> 3 Model 3     y1  0.90594587 0.081380229 11.1322600 7.972879e-03      0.0001
-#> 4 Model 4     y1  0.89968973 0.083666977 10.7532237 8.537546e-03      0.0001
-#> 5 Model 5     y2 -0.25713775 0.066911523 -3.8429518 1.803720e-04      0.0012
-#> 6 Model 6     y2 -0.03006306 0.069635281 -0.4317216 6.665806e-01      0.7082
-#> 7 Model 7     y2  0.15467567 0.009745886 15.8708687 3.946587e-03      0.1441
-#> 8 Model 8     y2  0.14775231 0.019098384  7.7363777 1.630060e-02      0.1441
+#> feols(fml = c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species), data = base)
+#>     model depvar  Estimate  Std. Error   t value    Pr(>|t|) RW Pr(>|t|)
+#> 1 Model 1     y1 0.9059459 0.081380229 11.132260 0.007972879      0.0001
+#> 2 Model 2     y1 0.8996897 0.083666977 10.753224 0.008537546      0.0001
+#> 3 Model 3     y2 0.1546757 0.009745886 15.870869 0.003946587      0.1027
+#> 4 Model 4     y2 0.1477523 0.019098384  7.736378 0.016300601      0.1027
 ```
 
 ## Performance
