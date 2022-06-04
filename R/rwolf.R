@@ -1,4 +1,4 @@
-rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
+rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -11,7 +11,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
   #' @param r A numeric. Shifts the null hypothesis 
   #'        H0: param = r vs H1: param != r  
   #' @param B The number of bootstrap iterations
-  #' @param test_type Character vector of length 1. Type of hypothesis test 
+  #' @param p_val_type Character vector of length 1. Type of hypothesis test 
   #'        By default "two-tailed". Other options include "equal-tailed", ">" and "<". 
   #' @param weights_type character or function. The character string specifies the type
   #'                     of boostrap to use: One of "rademacher", "mammen", "norm"
@@ -26,11 +26,10 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
   #' @param ... additional function values passed to the bootstrap function. 
   
   #' @importFrom fwildclusterboot boottest
-  #' @importFrom dqrng dqset.seed
   #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @importFrom dreamerr check_arg
-  #' @importFrom stats terms
+  #' @importFrom stats terms formula
   #' @export
   #' 
   #' @examples
@@ -47,7 +46,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
   #' Y3 <- 1 + 0.01 * X1 + rnorm(N)
   #' Y4 <- 1 + 0.01 * X1 + rnorm(N)
   #' 
-  #' B <- 100
+  #' B <- 999
   #' # intra-cluster correlation of 0 for all clusters
   #' cluster <- rep(1:50, N / 50)
   #' 
@@ -69,7 +68,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
   check_arg(param, "character vector | character scalar")
   check_arg(R, "NULL | numeric vector")
   check_arg(r, "NULL | numeric scalar")
-  check_arg(test_type, "charin(two_sided, >, <)")
+  check_arg(p_val_type, "charin(two_sided, >, <)")
   check_arg(B, "integer scalar GT{99}")
   check_arg(seed, "integer scalar | NULL")
   check_arg(boot_algo, "charin(R, R-lean, WildBootTests.jl)")
@@ -116,7 +115,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
                  R = R, 
                  r = r, 
                  boot_algo = boot_algo, 
-                 p_val_type = test_type, 
+                 p_val_type = p_val_type, 
                  type = weights_type, 
                  clustid = formula(clustid))
              } else {
@@ -127,7 +126,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", w
                  R = R, 
                  r = r, 
                  boot_algo = boot_algo, 
-                 p_val_type = test_type, 
+                 p_val_type = p_val_type, 
                  type = weights_type
                  )
              }

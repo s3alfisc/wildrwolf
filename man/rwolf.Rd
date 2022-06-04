@@ -10,7 +10,7 @@ rwolf(
   B,
   R = NULL,
   r = 0,
-  test_type = "two-sided",
+  p_val_type = "two-tailed",
   weights_type = "rademacher",
   seed = NULL,
   boot_algo = "R",
@@ -30,7 +30,7 @@ rwolf(
 \item{r}{A numeric. Shifts the null hypothesis 
 H0: param = r vs H1: param != r}
 
-\item{test_type}{Character vector of length 1. Type of hypothesis test 
+\item{p_val_type}{Character vector of length 1. Type of hypothesis test 
 By default "two-tailed". Other options include "equal-tailed", ">" and "<".}
 
 \item{weights_type}{character or function. The character string specifies the type
@@ -68,7 +68,7 @@ Y2 <- 1 + 0.01 * X1 + rnorm(N)
 Y3 <- 1 + 0.01 * X1 + rnorm(N)
 Y4 <- 1 + 0.01 * X1 + rnorm(N)
 
-B <- 100
+B <- 999
 # intra-cluster correlation of 0 for all clusters
 cluster <- rep(1:50, N / 50)
 
