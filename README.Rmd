@@ -23,9 +23,9 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest_multi` from the `fixest` package (currently for one-way clustered inference) via a wild cluster bootstrap. At its current stage, the package is highly experimental and it is not thoroughly tested.
+The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest` and fixest_multi` from the `fixest` package via a wild cluster bootstrap. At its current stage, the package is experimental and it is not thoroughly tested.
 
-Adding support for the heteroskedastic wild bootstrap and multi-way clustering is work in progress.
+Adding support for multi-way clustering is work in progress.
 
 I hope to submit `wildrwolf` to CRAN by the end of the summer - if you would like to help me get there, please send me an email `r emo::ji("smile")` 
 

@@ -13,13 +13,12 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf
-multiple-hypothesis-adjusted p-values for objects of type `fixest_multi`
-from the `fixest` package (currently for one-way clustered inference)
-via a wild cluster bootstrap. At its current stage, the package is
-highly experimental and it is not thoroughly tested.
+multiple-hypothesis-adjusted p-values for objects of type `fixest` and
+fixest_multi`from the`fixest\` package via a wild cluster bootstrap. At
+its current stage, the package is experimental and it is not thoroughly
+tested.
 
-Adding support for the heteroskedastic wild bootstrap and multi-way
-clustering is work in progress.
+Adding support for multi-way clustering is work in progress.
 
 I hope to submit `wildrwolf` to CRAN by the end of the summer - if you
 would like to help me get there, please send me an email 😄
@@ -79,9 +78,9 @@ res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
 summary(res_rwolf)
 #>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4043
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4043
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1097
+#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4089
+#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4089
+#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1140
 ```
 
 ## Example II
@@ -101,9 +100,9 @@ res_rwolf <- rwolf(
 summary(res_rwolf)
 #>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4220
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4220
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1179
+#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4156
+#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4156
+#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1137
 ```
 
 ## Example III
