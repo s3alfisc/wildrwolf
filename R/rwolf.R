@@ -1,4 +1,4 @@
-rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
+rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-tailed", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -81,115 +81,70 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
         stop("The object models needs to be of type 'fixest_multi' or a list of objects of type 'fixest'.")
   }
   
-  if(!is.null(seed)){
-    set.seed(seed)
-    dqrng::dqset.seed(seed)
+  call <- models[[1]]$call
+  S <- length(models)
+    
+  # define a function to get statistics from fixest_multi object
+  get_stats_fixest <- function(x, stat){
+    res <- fixest::coeftable(models[[x]])[which(rownames(fixest::coeftable(models[[x]])) == param), stat]
+    res
   }
-
-  models <- as.list(models)
-  #if(!all_fixest){
-    # get the model call
-    call <- models[[1]]$call
-    # get the name of the dependent variables
-    #depvars <- names(models)
-    # get the number of tested hypotheses
-    S <- length(models)
-    # get the data frame used in the feols() call from the global environment
-    data <- as.data.frame(eval(models[[1]]$call$data))            
-    # additional cleaning steps required -> all cluster variables and fixed effects in model should be factors (this is what fixest does)
-    N <- dim(data)[1]
     
-    # get the clustering variable
-    cluster <- as.character(models[[1]]$call$cluster)
-    cluster <- cluster[which(cluster != "~")]
-    
-    if(length(cluster) == 0){
-      cluster <- NULL
-      # get the number of unique clusters
-      G <- length(unique(data[, cluster]))
-      if(boot_algo == "WildBootTests.jl"){
-        stop("The non-clustered heteroskedasticity robust wild bootstrap is
-           currently not supported for 'boot_algo == WildBootTests.jl'.")
-      }
-      heteroskedastic <- TRUE
-    } else {
-      heteroskedastic <- FALSE
-    }
-    
-    
-    # define a function to get statistics from fixest_multi object
-    get_stats_fixest <- function(x, stat){
-      res <- fixest::coeftable(models[[x]])[which(rownames(fixest::coeftable(models[[x]])) == param), stat]
-      res
-    }
-    
-    # and get coefs, t-stats and ses 
-    # no absolute values for coefs, ses 
-    coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
-    ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
-    # absolute value for t-stats
-    t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  # and get coefs, t-stats and ses 
+  # no absolute values for coefs, ses 
+  coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
+  ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
+  # absolute value for t-stats
+  t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  # repeat line: for multiway clustering, it is not clear how many bootstrap 
+  # test statistics will be invalied - for oneway, all vectors of length(boot_coefs) \leq B
   
-    # t_stats <- abs(coefs / ses)
-    
-    # repeat line: for multiway clustering, it is not clear how many bootstrap 
-    # test statistics will be invalied - for oneway, all vectors of length(boot_coefs) \leq B
-    boot_coefs <- boot_ses <- boot_t_stats <- matrix(NA, B, S) 
-
-  # run the bootstrap via fwildclusterboot or wildboottestjlr
-  for(x in 1:length(models)){
-    
-    model <- models[[x]]
-    
-    # need to recalculate "original" t-statistics with null imposed"
-    
-    model$call <- rlang::call_modify(model$call, fml = model$fml)
-    # if fixed effect in model - add it as fixef arg
-    if("fixef_vars" %in% names(model)){
-      all_fes <- labels(terms(model$fml_all$fixef))
-      if(length(all_fes) != 0){
-        model$call <- rlang::call_modify(model$call, fixef = labels(terms(model$fml_all$fixef)))
-      }
-    }
+  boot_coefs <- boot_ses <- matrix(NA, B, S) 
+  boot_t_stats <- list()
   
-    # drop the internal cluster argument
-    model$call <- rlang::call_modify(model$call, cluster = NULL)
-    
-    if(boot_algo == "R"){
-      res <- suppressMessages(
-        boottest(object = model, 
-                 clustid = cluster, 
-                 param = param, 
+  res <- 
+    lapply(seq_along(models), 
+           function(x){
+             
+             clustid <- models[[x]]$call$cluster
+             
+             if(!is.null(clustid)){
+               boottest(
+                 models[[x]],
+                 param = param,
                  B = B, 
-                 conf_int = FALSE, 
-                 impose_null = TRUE, 
-                 nthreads = nthreads, 
                  R = R, 
-                 r = r)
-      )
-    } else if(boot_algo == "WildBootTests.jl"){
-      res <- suppressMessages(
-        boottest(object = model, 
-                clustid = cluster, 
-                param = param, 
-                B = B, 
-                conf_int = FALSE, 
-                impose_null = TRUE, 
-                boot_algo = "WildBootTests.jl", 
-                R = R, 
-                r = r)
-      )
-    }
-    
+                 r = r, 
+                 boot_algo = boot_algo, 
+                 p_val_type = test_type, 
+                 type = weights_type, 
+                 clustid = formula(clustid))
+             } else {
+               boottest(
+                 models[[x]],
+                 param = param,
+                 B = B,
+                 R = R, 
+                 r = r, 
+                 boot_algo = boot_algo, 
+                 p_val_type = test_type, 
+                 type = weights_type
+                 )
+             }
+           
+             
+           })
+  
+  for(x in seq_along(models)){
     # take absolute values of bootstrap t statistics
-    t_stats[x] <- abs(res$t_stat[1])
-    boot_t_stats[,x] <- abs(res$t_boot)     
-    
-    
+    t_stats[x] <- abs(res[[x]]$t_stat)
+    boot_t_stats[[x]] <- abs(res[[x]]$t_boot)     
   }
+  
+  boot_t_stats <- Reduce(cbind, boot_t_stats)
   
   # after calculating all bootstrap t statistics, initiate the RW procedure
-  
+
   # stepwise p-value calculation
   # note: this code part very closely follows the p_adjust function from the hdm
   # package, written and maintained by Martin Spindler
@@ -239,11 +194,11 @@ rwolf <- function(models, param, B, R = NULL, r = 0, test_type = "two-sided", we
       tmp1
     })
   )
+  
   # some reordering
   models_info <- models_info[, c(6,5, 1:4)]
   models_info[, "RW Pr(>|t|)"] <- pval
-  #rownames(models_info) <- depvars
-  
+
   res <- list(
     call = call,
     models_info = models_info,
