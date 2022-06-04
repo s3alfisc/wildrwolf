@@ -77,16 +77,36 @@ rm(list= ls()[!(ls() %in% c('res','data'))])
 
 res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
 summary(res_rwolf)
-#> feols(fml = c(Y1, Y2, Y3, Y4) ~ X1 + X2, data = data, cluster = ~group_id, 
-#>     ssc = ssc(cluster.adj = TRUE))
 #>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4176
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4176
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1166
+#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4043
+#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4043
+#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1097
 ```
 
 ## Example II
+
+``` r
+fit1 <- feols(Y1 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit2 <- feols(Y2 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit3 <- feols(Y3 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit4 <- feols(Y4 ~ X1 + X2, data = data, cluster = ~ group_id)
+
+res_rwolf <- rwolf(
+  models = list(fit1, fit2, fit3, fit4), 
+  param = "X1", 
+  B = 9999,
+  nthreads = 2
+)
+summary(res_rwolf)
+#>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
+#> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
+#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4220
+#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4220
+#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1179
+```
+
+## Example III
 
 ``` r
 base = iris
@@ -99,7 +119,6 @@ res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species),
 res_rwolf2 <- rwolf(models = res_multi, param = "x1", B = 9999, nthreads = 2)
 
 summary(res_rwolf2)
-#> feols(fml = c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species), data = base)
 #>     model depvar  Estimate Std. Error  t value    Pr(>|t|) RW Pr(>|t|)
 #> 1 Model 1     y1 0.9059459 0.08138023 11.13226 0.007972879       1e-04
 #> 2 Model 2     y1 0.8996897 0.08366698 10.75322 0.008537546       1e-04

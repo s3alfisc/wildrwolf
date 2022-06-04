@@ -84,7 +84,28 @@ summary(res_rwolf)
 
 
 ```
-## Example II 
+
+## Example II
+
+```{r, warning = FALSE, message = FALSE}
+fit1 <- feols(Y1 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit2 <- feols(Y2 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit3 <- feols(Y3 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit4 <- feols(Y4 ~ X1 + X2, data = data, cluster = ~ group_id)
+
+res_rwolf <- rwolf(
+  models = list(fit1, fit2, fit3, fit4), 
+  param = "X1", 
+  B = 9999,
+  nthreads = 2
+)
+summary(res_rwolf)
+
+
+
+```
+
+## Example III
 
 ```{r}
 base = iris
