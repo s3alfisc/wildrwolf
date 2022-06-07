@@ -66,9 +66,9 @@ the null is always imposed.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>models</dt>
-<dd><p>An object of type fixest_multi</p></dd>
+<dd><p>An object of type fixest_multi or a list of objects of type fixest</p></dd>
 <dt>param</dt>
-<dd><p>The regression param to be tested</p></dd>
+<dd><p>The regression parameter to be tested</p></dd>
 <dt>B</dt>
 <dd><p>The number of bootstrap iterations</p></dd>
 <dt>R</dt>
@@ -132,9 +132,9 @@ will use each possible combination once (enumeration).</p></dd>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model depvar     Estimate Std. Error     t value     Pr(&gt;|t|) RW Pr(&gt;|t|)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 Model 1     Y1  1.039148254 0.02704012 38.42986863 2.986499e-38       0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Model 2     Y2 -0.001648731 0.03223729 -0.05114359 9.594190e-01       0.997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Model 3     Y3 -0.015621569 0.02783903 -0.56113920 5.772600e-01       0.924</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Model 4     Y4  0.001631384 0.02756427  0.05918475 9.530457e-01       0.997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Model 2     Y2 -0.001648731 0.03223729 -0.05114359 9.594190e-01       0.996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Model 3     Y3 -0.015621569 0.02783903 -0.56113920 5.772600e-01       0.920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Model 4     Y4  0.001631384 0.02756427  0.05918475 9.530457e-01       0.996</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
