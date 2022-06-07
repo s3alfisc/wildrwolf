@@ -2,7 +2,6 @@
 
 S3method(summary,rwolf)
 export(rwolf)
-importFrom(data.table,rbindlist)
 importFrom(dreamerr,check_arg)
 importFrom(fixest,coeftable)
 importFrom(fwildclusterboot,boottest)

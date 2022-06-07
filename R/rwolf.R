@@ -26,7 +26,6 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   #' @param ... additional function values passed to the bootstrap function. 
   
   #' @importFrom fwildclusterboot boottest
-  #' @importFrom data.table rbindlist
   #' @importFrom fixest coeftable
   #' @importFrom dreamerr check_arg
   #' @importFrom stats terms formula
@@ -189,7 +188,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   
   
   # summarize all results 
-  models_info <- data.table::rbindlist(
+  models_info <- 
     lapply(1:S, function(x){
       tmp <- coeftable(models[[x]])
       tmp1 <- tmp[which(rownames(tmp) == param),]
@@ -197,10 +196,14 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
       tmp1$model <- paste("Model", x)
       tmp1
     })
-  )
+  
+  models_info <- Reduce(rbind, models_info)
   
   # some reordering
   models_info <- models_info[, c(6,5, 1:4)]
+  models_info <- as.data.frame(models_info)
+  # attributes(models_info)$row.names <- NULL 
+  rownames(models_info) <- NULL
   models_info[, "RW Pr(>|t|)"] <- pval
 
   res <- list(

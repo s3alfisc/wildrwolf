@@ -10,6 +10,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 
+[![Codecov test
+coverage](https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/rwolf?branch=main)
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf
@@ -76,11 +78,11 @@ rm(list= ls()[!(ls() %in% c('res','data'))])
 
 res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
 summary(res_rwolf)
-#>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4228
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4228
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1145
+#>     model depvar    Estimate Std. Error   t value      Pr(>|t|) RW Pr(>|t|)
+#> 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001
+#> 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4142
+#> 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4142
+#> 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1126
 ```
 
 ## Example II
@@ -98,11 +100,11 @@ res_rwolf <- rwolf(
   nthreads = 2
 )
 summary(res_rwolf)
-#>     model depvar    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     Y1 0.995788153 0.01038199 95.9149274 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741  0.8855978  3.769031e-01      0.4141
-#> 3 Model 3     Y3 0.011942201 0.01001154  1.1928441  2.343508e-01      0.4141
-#> 4 Model 4     Y4 0.021048717 0.01017059  2.0695674  3.978448e-02      0.1184
+#>     model depvar    Estimate Std. Error   t value      Pr(>|t|) RW Pr(>|t|)
+#> 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001
+#> 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4119
+#> 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4119
+#> 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1147
 ```
 
 ## Example III
