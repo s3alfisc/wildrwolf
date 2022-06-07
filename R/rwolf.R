@@ -5,8 +5,8 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   #' Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
   #' Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. For the wild cluster bootstrap, 
   #' the null is always imposed.
-  #' @param models An object of type fixest_multi
-  #' @param param The regression param to be tested
+  #' @param models An object of type fixest_multi or a list of objects of type fixest
+  #' @param param The regression parameter to be tested
   #' @param R Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
   #' @param r A numeric. Shifts the null hypothesis 
   #'        H0: param = r vs H1: param != r  
@@ -65,7 +65,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   #' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
   
   
-  check_arg(param, "character vector | character scalar")
+  check_arg(param, "character vector | character scalar | formula")
   check_arg(R, "NULL | numeric vector")
   check_arg(r, "NULL | numeric scalar")
   check_arg(p_val_type, "charin(two_sided, >, <)")
@@ -223,9 +223,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   
 }
 
-
-
-summary.rwolf <- function(object, digits = 3, ...){
+summary.rwolf <- function(object, digits, ...){
   #' Summary method for objects of type rwolf
   #' @param object An object of type rwolf
   #' @param digits Rounding of digits

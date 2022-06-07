@@ -19,9 +19,9 @@ rwolf(
 )
 }
 \arguments{
-\item{models}{An object of type fixest_multi}
+\item{models}{An object of type fixest_multi or a list of objects of type fixest}
 
-\item{param}{The regression param to be tested}
+\item{param}{The regression parameter to be tested}
 
 \item{B}{The number of bootstrap iterations}
 

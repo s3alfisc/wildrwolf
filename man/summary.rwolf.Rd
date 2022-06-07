@@ -4,7 +4,7 @@
 \alias{summary.rwolf}
 \title{Summary method for objects of type rwolf}
 \usage{
-\method{summary}{rwolf}(object, digits = 3, ...)
+\method{summary}{rwolf}(object, digits, ...)
 }
 \arguments{
 \item{object}{An object of type rwolf}

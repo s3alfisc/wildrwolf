@@ -14,13 +14,14 @@ knitr::opts_chunk$set(
 ```
 
 
-# wildrwolf
+# wildrwolf `r emo::ji("wolf")`
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/s3alfisc/rwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/rwolf/actions)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 
+[![Codecov test coverage](https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/rwolf?branch=main)
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest` and fixest_multi` from the `fixest` package via a wild cluster bootstrap. At its current stage, the package is experimental and it is not thoroughly tested.
@@ -95,7 +96,7 @@ fit4 <- feols(Y4 ~ X1 + X2, data = data, cluster = ~ group_id)
 
 res_rwolf <- rwolf(
   models = list(fit1, fit2, fit3, fit4), 
-  param = "X1", 
+  param = "X1",  
   B = 9999,
   nthreads = 2
 )
