@@ -13,7 +13,6 @@ Imports:
   fixest, 
   fwildclusterboot, 
   dreamerr
-Remotes: s3alfisc/fwildclusterboot
 URL: https://s3alfisc.github.io/wildrwolf/
 Suggests: 
     covr,
