@@ -1,4 +1,4 @@
-rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", weights_type = "rademacher", seed = NULL, boot_algo = "R", nthreads = 1, ...){
+rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", weights_type = "rademacher", seed = NULL, engine = "R", nthreads = 1, ...){
   
   #' Romano-Wolf multiple hypotheses adjusted p-values 
   #' 
@@ -21,7 +21,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   #'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
   #'                     will use each possible combination once (enumeration).               
   #' @param seed Integer. Sets the random seed. NULL by default. 
-  #' @param boot_algo Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
+  #' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
   #' @param nthreads Integer. The number of threads to use. 
   #' @param ... additional function values passed to the bootstrap function. 
   
@@ -70,7 +70,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   check_arg(p_val_type, "charin(two_sided, >, <)")
   check_arg(B, "integer scalar GT{99}")
   check_arg(seed, "integer scalar | NULL")
-  check_arg(boot_algo, "charin(R, R-lean, WildBootTests.jl)")
+  check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
   check_arg(nthreads, "scalar integer")
   
   
@@ -118,7 +118,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
                  B = B, 
                  R = R, 
                  r = r, 
-                 boot_algo = boot_algo, 
+                 engine = engine, 
                  p_val_type = p_val_type, 
                  type = weights_type, 
                  clustid = formula(clustid))
@@ -129,7 +129,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
                  B = B,
                  R = R, 
                  r = r, 
-                 boot_algo = boot_algo, 
+                 engine = engine, 
                  p_val_type = p_val_type, 
                  type = weights_type
                  )
