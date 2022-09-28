@@ -8,8 +8,8 @@
 <meta name="description" content="Implements Romano-Wolf corrected p-values for objects of type fixest and fixest_multi via a wild (cluster) bootstrap.">
 <title>Romano-Wolf corrected p-values for objects of type fixest and fixest_multi • wildrwolf</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Romano-Wolf corrected p-values for objects of type fixest and fixest_multi">
 <meta property="og:description" content="Implements Romano-Wolf corrected p-values for objects of type fixest and fixest_multi via a wild (cluster) bootstrap.">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">wildrwolf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,9 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -63,160 +66,160 @@
 </h2>
 <p>You can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"s3alfisc/wildrwolf"</span><span class="op">)</span>
-
-<span class="co"># from r-universe (windows &amp; mac, compiled R &gt; 4.0 required)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'wildrwolf'</span>, repos <span class="op">=</span><span class="st">'https://s3alfisc.r-universe.dev'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"s3alfisc/wildrwolf"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># from r-universe (windows &amp; mac, compiled R &gt; 4.0 required)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'wildrwolf'</span>, repos <span class="op">=</span><span class="st">'https://s3alfisc.r-universe.dev'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-i">Example I<a class="anchor" aria-label="anchor" href="#example-i"></a>
 </h2>
 <!-- As you can see in the example, there seems to be a bug in `rwolf()` for the pairs bootstrap. --><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lrberge.github.io/fixest/" class="external-link">fixest</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://s3alfisc.github.io/wildrwolf/">wildrwolf</a></span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span>
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">X1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-<span class="va">X2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-<span class="va">Y1</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-<span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-<span class="va">Y3</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-<span class="va">Y4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
-
-<span class="co"># intra-cluster correlation of 0 for all clusters</span>
-<span class="va">numb_clusters</span> <span class="op">&lt;-</span> <span class="va">N</span> <span class="op">/</span> <span class="fl">50</span>
-<span class="va">group_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">numb_clusters</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Y1 <span class="op">=</span> <span class="va">Y1</span>, 
-                   Y2 <span class="op">=</span> <span class="va">Y2</span>, 
-                   Y3 <span class="op">=</span> <span class="va">Y3</span>, 
-                   Y4 <span class="op">=</span> <span class="va">Y4</span>,
-                   X1 <span class="op">=</span> <span class="va">X1</span>,
-                   X2 <span class="op">=</span> <span class="va">X2</span>,
-                   group_id <span class="op">=</span> <span class="va">group_id</span>, 
-                   splitvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="va">N</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Y1</span>, <span class="va">Y2</span>, <span class="va">Y3</span>, <span class="va">Y4</span><span class="op">)</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, 
-             data <span class="op">=</span> <span class="va">data</span>,
-             cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span>, 
-             ssc <span class="op">=</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/ssc.html" class="external-link">ssc</a></span><span class="op">(</span>cluster.adj <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># clean workspace except for res &amp; data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span>list<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'res'</span>,<span class="st">'data'</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-
-<span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">9999</span>, nthreads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span>
-<span class="co">#&gt;     model depvar    Estimate Std. Error   t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span>
-<span class="co">#&gt; 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001</span>
-<span class="co">#&gt; 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4142</span>
-<span class="co">#&gt; 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4142</span>
-<span class="co">#&gt; 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1126</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lrberge.github.io/fixest/" class="external-link">fixest</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://s3alfisc.github.io/wildrwolf/">wildrwolf</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">X1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="va">X2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="va">Y1</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="va">Y3</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="va">Y4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># intra-cluster correlation of 0 for all clusters</span></span>
+<span><span class="va">numb_clusters</span> <span class="op">&lt;-</span> <span class="va">N</span> <span class="op">/</span> <span class="fl">50</span></span>
+<span><span class="va">group_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">numb_clusters</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Y1 <span class="op">=</span> <span class="va">Y1</span>, </span>
+<span>                   Y2 <span class="op">=</span> <span class="va">Y2</span>, </span>
+<span>                   Y3 <span class="op">=</span> <span class="va">Y3</span>, </span>
+<span>                   Y4 <span class="op">=</span> <span class="va">Y4</span>,</span>
+<span>                   X1 <span class="op">=</span> <span class="va">X1</span>,</span>
+<span>                   X2 <span class="op">=</span> <span class="va">X2</span>,</span>
+<span>                   group_id <span class="op">=</span> <span class="va">group_id</span>, </span>
+<span>                   splitvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="va">N</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Y1</span>, <span class="va">Y2</span>, <span class="va">Y3</span>, <span class="va">Y4</span><span class="op">)</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, </span>
+<span>             data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>             cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span>, </span>
+<span>             ssc <span class="op">=</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/ssc.html" class="external-link">ssc</a></span><span class="op">(</span>cluster.adj <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># clean workspace except for res &amp; data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span>list<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'res'</span>,<span class="st">'data'</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">9999</span>, nthreads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     model depvar    Estimate Std. Error   t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001</span></span>
+<span><span class="co">#&gt; 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4142</span></span>
+<span><span class="co">#&gt; 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4142</span></span>
+<span><span class="co">#&gt; 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1126</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-ii">Example II<a class="anchor" aria-label="anchor" href="#example-ii"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y1</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span>
-<span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y2</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span>
-<span class="va">fit3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y3</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span>
-<span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y4</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span>
-
-<span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>
-  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="va">fit2</span>, <span class="va">fit3</span>, <span class="va">fit4</span><span class="op">)</span>, 
-  param <span class="op">=</span> <span class="st">"X1"</span>,  
-  B <span class="op">=</span> <span class="fl">9999</span>,
-  nthreads <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span>
-<span class="co">#&gt;     model depvar    Estimate Std. Error   t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span>
-<span class="co">#&gt; 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001</span>
-<span class="co">#&gt; 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4119</span>
-<span class="co">#&gt; 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4119</span>
-<span class="co">#&gt; 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1147</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y1</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span></span>
+<span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y2</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span></span>
+<span><span class="va">fit3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y3</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span></span>
+<span><span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y4</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">group_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="va">fit2</span>, <span class="va">fit3</span>, <span class="va">fit4</span><span class="op">)</span>, </span>
+<span>  param <span class="op">=</span> <span class="st">"X1"</span>,  </span>
+<span>  B <span class="op">=</span> <span class="fl">9999</span>,</span>
+<span>  nthreads <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     model depvar    Estimate Std. Error   t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001</span></span>
+<span><span class="co">#&gt; 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4119</span></span>
+<span><span class="co">#&gt; 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4119</span></span>
+<span><span class="co">#&gt; 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1147</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-iii">Example III<a class="anchor" aria-label="anchor" href="#example-iii"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">base</span> <span class="op">=</span> <span class="va">iris</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y1"</span>, <span class="st">"y2"</span>, <span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"species"</span><span class="op">)</span>
-
-<span class="co"># no clustering, heteroskedastic wild bootstrap</span>
-<span class="va">res_multi</span> <span class="op">=</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span><span class="op">)</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/stepwise.html" class="external-link">csw</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">x2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/stepwise.html" class="external-link">sw</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>,
-                  data <span class="op">=</span> <span class="va">base</span><span class="op">)</span>
-
-<span class="va">res_rwolf2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res_multi</span>, param <span class="op">=</span> <span class="st">"x1"</span>, B <span class="op">=</span> <span class="fl">9999</span>, nthreads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf2</span><span class="op">)</span>
-<span class="co">#&gt;     model depvar  Estimate Std. Error  t value    Pr(&gt;|t|) RW Pr(&gt;|t|)</span>
-<span class="co">#&gt; 1 Model 1     y1 0.9059459 0.08138023 11.13226 0.007972879       1e-04</span>
-<span class="co">#&gt; 2 Model 2     y1 0.8996897 0.08366698 10.75322 0.008537546       1e-04</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">base</span> <span class="op">=</span> <span class="va">iris</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y1"</span>, <span class="st">"y2"</span>, <span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"species"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># no clustering, heteroskedastic wild bootstrap</span></span>
+<span><span class="va">res_multi</span> <span class="op">=</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span><span class="op">)</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="fu">csw</span><span class="op">(</span><span class="va">x2</span>, <span class="va">x2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">|</span> <span class="fu">sw</span><span class="op">(</span><span class="va">species</span><span class="op">)</span>,</span>
+<span>                  data <span class="op">=</span> <span class="va">base</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res_rwolf2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res_multi</span>, param <span class="op">=</span> <span class="st">"x1"</span>, B <span class="op">=</span> <span class="fl">9999</span>, nthreads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     model depvar  Estimate Std. Error  t value    Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1 Model 1     y1 0.9059459 0.08138023 11.13226 0.007972879       1e-04</span></span>
+<span><span class="co">#&gt; 2 Model 2     y1 0.8996897 0.08366698 10.75322 0.008537546       1e-04</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
 </h2>
 <p>Using the wild cluster bootstrap implementations in <code>fwildclusterboot</code> is fast:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">microbenchmark</span><span class="fu">::</span><span class="fu">microbenchmark</span><span class="op">(</span>res_rwolf1 <span class="op">=</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">99999</span>, boot_algo <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span>,
-                               res_rwolf2 <span class="op">=</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">99999</span>, boot_algo <span class="op">=</span> <span class="st">"WildBootTests.jl"</span><span class="op">)</span>,
-                               times <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co"># Unit: seconds</span>
-<span class="co"># expr         min       lq       mean    median    uq       max    neval</span>
-<span class="co"># res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1</span>
-<span class="co"># res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">microbenchmark</span><span class="fu">::</span><span class="fu">microbenchmark</span><span class="op">(</span>res_rwolf1 <span class="op">=</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">99999</span>, boot_algo <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span>,</span>
+<span>                               res_rwolf2 <span class="op">=</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span>models <span class="op">=</span> <span class="va">res</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">99999</span>, boot_algo <span class="op">=</span> <span class="st">"WildBootTests.jl"</span><span class="op">)</span>,</span>
+<span>                               times <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># Unit: seconds</span></span>
+<span><span class="co"># expr         min       lq       mean    median    uq       max    neval</span></span>
+<span><span class="co"># res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1</span></span>
+<span><span class="co"># res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparison-with-statas-rwolf-package">Comparison with Stata’s rwolf package<a class="anchor" aria-label="anchor" href="#comparison-with-statas-rwolf-package"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/lbraglia/RStata" class="external-link">RStata</a></span><span class="op">)</span>
-<span class="co"># initiate RStata</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataVersion"</span> <span class="op">=</span> <span class="fl">16</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataPath"</span> <span class="op">=</span> <span class="st">"\"C:\\Program Files\\Stata16\\StataIC-64\""</span><span class="op">)</span>
-<span class="co"># save the data set so it can be loaded into STATA</span>
-<span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"c:/Users/alexa/Dropbox/rwolf/test.csv"</span><span class="op">)</span>
-
-<span class="co"># estimate with stata via Rstata</span>
-<span class="va">stata_program</span> <span class="op">&lt;-</span> <span class="st">"
-clear 
-set more off
-import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
-set seed 1
-rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots
-"</span>
-<span class="fu">RStata</span><span class="fu">::</span><span class="fu">stata</span><span class="op">(</span><span class="va">stata_program</span>, data.out <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co">#&gt; . </span>
-<span class="co">#&gt; . clear </span>
-<span class="co">#&gt; . set more off</span>
-<span class="co">#&gt; . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv</span>
-<span class="co">#&gt; (7 vars, 10,000 obs)</span>
-<span class="co">#&gt; . set seed 1</span>
-<span class="co">#&gt; . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont</span>
-<span class="co">#&gt; &gt; rols(x2) reps(1000) nodots</span>
-<span class="co">#&gt; Bootstrap replications (1000). This may take some time.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Romano-Wolf step-down adjusted p-values</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Independent variable:  x1</span>
-<span class="co">#&gt; Outcome variables:   y1 y2 y3 y4</span>
-<span class="co">#&gt; Number of resamples: 1000</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ------------------------------------------------------------------------------</span>
-<span class="co">#&gt;    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value</span>
-<span class="co">#&gt; --------------------+---------------------------------------------------------</span>
-<span class="co">#&gt;                  y1 |    0.0000             0.0010              0.0010</span>
-<span class="co">#&gt;                  y2 |    0.3769             0.3756              0.4166</span>
-<span class="co">#&gt;                  y3 |    0.2344             0.2408              0.4166</span>
-<span class="co">#&gt;                  y4 |    0.0398             0.0410              0.1179</span>
-<span class="co">#&gt; ------------------------------------------------------------------------------</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/lbraglia/RStata" class="external-link">RStata</a></span><span class="op">)</span></span>
+<span><span class="co"># initiate RStata</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataVersion"</span> <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataPath"</span> <span class="op">=</span> <span class="st">"\"C:\\Program Files\\Stata16\\StataIC-64\""</span><span class="op">)</span></span>
+<span><span class="co"># save the data set so it can be loaded into STATA</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu">fwrite</span><span class="op">(</span><span class="va">data</span>, <span class="st">"c:/Users/alexa/Dropbox/rwolf/test.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># estimate with stata via Rstata</span></span>
+<span><span class="va">stata_program</span> <span class="op">&lt;-</span> <span class="st">"</span></span>
+<span><span class="st">clear </span></span>
+<span><span class="st">set more off</span></span>
+<span><span class="st">import delimited c:/Users/alexa/Dropbox/rwolf/test.csv</span></span>
+<span><span class="st">set seed 1</span></span>
+<span><span class="st">rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots</span></span>
+<span><span class="st">"</span></span>
+<span><span class="fu">RStata</span><span class="fu">::</span><span class="fu">stata</span><span class="op">(</span><span class="va">stata_program</span>, data.out <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#&gt; . </span></span>
+<span><span class="co">#&gt; . clear </span></span>
+<span><span class="co">#&gt; . set more off</span></span>
+<span><span class="co">#&gt; . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv</span></span>
+<span><span class="co">#&gt; (7 vars, 10,000 obs)</span></span>
+<span><span class="co">#&gt; . set seed 1</span></span>
+<span><span class="co">#&gt; . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont</span></span>
+<span><span class="co">#&gt; &gt; rols(x2) reps(1000) nodots</span></span>
+<span><span class="co">#&gt; Bootstrap replications (1000). This may take some time.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Romano-Wolf step-down adjusted p-values</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Independent variable:  x1</span></span>
+<span><span class="co">#&gt; Outcome variables:   y1 y2 y3 y4</span></span>
+<span><span class="co">#&gt; Number of resamples: 1000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt;    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value</span></span>
+<span><span class="co">#&gt; --------------------+---------------------------------------------------------</span></span>
+<span><span class="co">#&gt;                  y1 |    0.0000             0.0010              0.0010</span></span>
+<span><span class="co">#&gt;                  y2 |    0.3769             0.3756              0.4166</span></span>
+<span><span class="co">#&gt;                  y3 |    0.2344             0.2408              0.4166</span></span>
+<span><span class="co">#&gt;                  y4 |    0.0398             0.0410              0.1179</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------------------------------</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -261,7 +264,7 @@ rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) control
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
