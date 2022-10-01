@@ -13,7 +13,7 @@ rwolf(
   p_val_type = "two-tailed",
   weights_type = "rademacher",
   seed = NULL,
-  boot_algo = "R",
+  engine = "R",
   nthreads = 1,
   ...
 )
@@ -43,7 +43,7 @@ will use each possible combination once (enumeration).}
 
 \item{seed}{Integer. Sets the random seed. NULL by default.}
 
-\item{boot_algo}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
+\item{engine}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
 
 \item{nthreads}{Integer. The number of threads to use.}
 

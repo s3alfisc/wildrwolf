@@ -73,6 +73,9 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
   check_arg(nthreads, "scalar integer")
   
+  if (inherits(param, "formula")) {
+    param <- attr(terms(param), "term.labels")
+  }
   
   # Check if 'models' is of type fixest_multi
   if(!inherits(models, "fixest_multi")){
