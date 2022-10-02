@@ -56,7 +56,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   #'                    X1 = X1, 
   #'                    cluster = cluster)
   #' 
-  #' res <- feols(c(Y1, Y2, Y3, Y4) ~ X1, data = data, cluster = ~ cluster)
+  #' res <- feols(c(Y1, Y2, Y3) ~ X1, data = data, cluster = ~ cluster)
   #' res_rwolf <- rwolf(models = res, param = "X1", B = B)
   #' summary(res_rwolf)
   #' 
