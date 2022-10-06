@@ -170,7 +170,7 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
   # after calculating all bootstrap t statistics, initiate the RW procedure
 
   # stepwise p-value calculation
-  # note: this code part very closely follows the p_adjust function from the hdm
+  # note: this part very closely follows the p_adjust function from the hdm
   # package, written and maintained by Martin Spindler
   # code at https://github.com/cran/hdm/blob/master/R/p_adjust.R
   

@@ -16,9 +16,9 @@ coverage](https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg)](htt
 
 The `wildrwolf` package implements Romano-Wolf
 multiple-hypothesis-adjusted p-values for objects of type `fixest` and
-fixest_multi`from the`fixest\` package via a wild cluster bootstrap. At
-its current stage, the package is experimental and it is not thoroughly
-tested.
+`fixest_multi` from the `fixest` package via a wild cluster bootstrap.
+At its current stage, the package is experimental and it is not
+thoroughly tested.
 
 Because the bootstrap-resampling is based on the
 [fwildclusterboot](https://github.com/s3alfisc/fwildclusterboot)
@@ -119,6 +119,7 @@ summary(res_rwolf)
 #> 6     6   0.3863082 0.01397504  27.64272 1.228595e-156      0.0001
 #> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599      0.3908
 #> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104      0.3513
+
 # Westfall-Young Corrected P-values
 summary(res_wyoung)
 #>   model    Estimate Std. Error   t value      Pr(>|t|) WY Pr(>|t|)
@@ -130,6 +131,7 @@ summary(res_wyoung)
 #> 6     6   0.3863082 0.01397504  27.64272 1.228595e-156   0.0000000
 #> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599   0.3885389
 #> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104   0.3539354
+
 # Holm Corrected P-values
 p.adjust(pvals, method = "holm") |> round(4)
 #>     X1     X1     X1     X1     X1     X1     X1     X1 
@@ -158,23 +160,38 @@ summary(res_rwolf)
 #> 4     4 0.03008817 0.01418312 2.121407 0.03393663      0.0610
 ```
 
-<!-- ## Performance -->
-<!-- Using the wild cluster bootstrap implementations in `fwildclusterboot` is fast:  -->
-<!-- ```{r, eval = FALSE} -->
-<!-- microbenchmark::microbenchmark( -->
-<!--   res_rwolf1 = rwolf( -->
-<!--     models = fit,  -->
-<!--     param = "X1", -->
-<!--     B = 9999,  -->
-<!--     boot_algo = "R" -->
-<!--   ), -->
-<!--   times = 1 -->
-<!-- ) -->
-<!-- # Unit: seconds -->
-<!-- # expr         min       lq       mean    median    uq       max    neval -->
-<!-- # res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1 -->
-<!-- # res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1 -->
-<!-- ``` -->
+## Performance
+
+The above procedures with `S=8` hypotheses, `N=5000` observations and
+`k %in% (1,2)` parameters finish each in around 3.5 seconds.
+
+``` r
+if(requireNamespace("microbenchmark")){
+  
+  microbenchmark::microbenchmark(
+    "Westfall-Young" = wildwyoung::wyoung(
+      models = fit,
+      param = "X1", 
+      B = 9999,
+      seed = 23
+    ),
+    "Romano-Wolf" = wildrwolf::rwolf(
+      models = fit,
+      param = "X1", 
+      B = 9999, 
+      seed = 23
+    ), 
+    times = 1
+  )
+ 
+ # t: seconds
+ #           expr      min       lq     mean   median       uq      max neval
+ # Westfall-Young 3.625710 3.625710 3.625710 3.625710 3.625710 3.625710     1
+ #    Romano-Wolf 3.382969 3.382969 3.382969 3.382969 3.382969 3.382969     1
+   
+}
+```
+
 <!-- ## Comparison with Stata's rwolf package  -->
 <!-- ```{r, eval = FALSE} -->
 <!-- library(RStata) -->
