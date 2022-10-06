@@ -20,6 +20,15 @@ fixest_multi`from the`fixest\` package via a wild cluster bootstrap. At
 its current stage, the package is experimental and it is not thoroughly
 tested.
 
+Because the bootstrap-resampling is based on the
+[fwildclusterboot](https://github.com/s3alfisc/fwildclusterboot)
+package, `wildwyoung` is usually really fast.
+
+The package is complementary to
+[wildwyoung](https://github.com/s3alfisc/wildwyoung), which implements
+the multiple hypothesis adjustment method following Westfall and Young
+(1993).
+
 Adding support for multi-way clustering is work in progress.
 
 I hope to submit `wildrwolf` to CRAN by the end of the summer - if you
@@ -43,150 +52,173 @@ install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 <!-- As you can see in the example, there seems to be a bug in `rwolf()` for the pairs bootstrap. -->
 
 ``` r
-library(fixest)
 library(wildrwolf)
+library(wildwyoung)
+library(fixest)
 
-set.seed(8)
-N <- 10000
+set.seed(1412)
+
+N <- 5000
 X1 <- rnorm(N)
 X2 <- rnorm(N)
-Y1 <- 1 + 1 * X1 + X2 + rnorm(N)
-Y2 <- 1 + 0.01 * X1 + X2 + rnorm(N)
-Y3 <- 1 + 0.01 * X1 + X2 + rnorm(N)
-Y4 <- 1 + 0.01 * X1 + X2 + rnorm(N)
+rho <- 0.5
+sigma <- matrix(rho, 4, 4); diag(sigma) <- 1
+u <- MASS::mvrnorm(n = N, mu = rep(0, 4), Sigma = sigma)
+Y1 <- 1 + 1 * X1 + X2 
+Y2 <- 1 + 0.01 * X1 + X2
+Y3 <- 1 + 0.4 * X1 + X2
+Y4 <- 1 + -0.02 * X1 + X2
+for(x in 1:4){
+  var_char <- paste0("Y", x)
+  assign(var_char, get(var_char) + u[,x])
+}
 
-# intra-cluster correlation of 0 for all clusters
-numb_clusters <- N / 50
-group_id <- as.character(sample(1:numb_clusters, N, replace = TRUE))
-
-data <- data.frame(Y1 = Y1, 
-                   Y2 = Y2, 
-                   Y3 = Y3, 
+data <- data.frame(Y1 = Y1,
+                   Y2 = Y2,
+                   Y3 = Y3,
                    Y4 = Y4,
                    X1 = X1,
                    X2 = X2,
-                   group_id = group_id, 
+                   #group_id = group_id,
                    splitvar = sample(1:2, N, TRUE))
 
-res <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2, 
+fit <- feols(c(Y1, Y2, Y3, Y4) ~ csw(X1,X2),
              data = data,
-             cluster = ~ group_id, 
+             se = "hetero",
              ssc = ssc(cluster.adj = TRUE))
 
 # clean workspace except for res & data
-rm(list= ls()[!(ls() %in% c('res','data'))])
+rm(list= ls()[!(ls() %in% c('fit','data'))])
 
-res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 2)
+res_rwolf <- wildrwolf::rwolf(
+  models = fit,
+  param = "X1", 
+  B = 9999, 
+  seed = 23
+)
+#>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
+
+res_wyoung <- wildwyoung::wyoung(
+  models = fit,
+  param = "X1", 
+  B = 9999,
+  seed = 23
+)
+#>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
+
+pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
+
+# Romano-Wolf Corrected P-values
 summary(res_rwolf)
-#>     model depvar    Estimate Std. Error   t value      Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4142
-#> 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4142
-#> 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1126
+#>   model    Estimate Std. Error   t value      Pr(>|t|) RW Pr(>|t|)
+#> 1     1    1.015905 0.02023716  50.19996             0      0.0001
+#> 2     2    1.014589 0.01416664  71.61819             0      0.0001
+#> 3     3  0.03139199 0.01970187  1.593351     0.1111447      0.2997
+#> 4     4  0.03008817  0.0140508  2.141384     0.0322913      0.1240
+#> 5     5   0.3876217 0.01996071  19.41924  4.817655e-81      0.0001
+#> 6     6   0.3863082 0.01397504  27.64272 1.228595e-156      0.0001
+#> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599      0.3908
+#> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104      0.3513
+# Westfall-Young Corrected P-values
+summary(res_wyoung)
+#>   model    Estimate Std. Error   t value      Pr(>|t|) WY Pr(>|t|)
+#> 1     1    1.015905 0.02023716  50.19996             0   0.0000000
+#> 2     2    1.014589 0.01416664  71.61819             0   0.0000000
+#> 3     3  0.03139199 0.01970187  1.593351     0.1111447   0.3009301
+#> 4     4  0.03008817  0.0140508  2.141384     0.0322913   0.1183118
+#> 5     5   0.3876217 0.01996071  19.41924  4.817655e-81   0.0000000
+#> 6     6   0.3863082 0.01397504  27.64272 1.228595e-156   0.0000000
+#> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599   0.3885389
+#> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104   0.3539354
+# Holm Corrected P-values
+p.adjust(pvals, method = "holm") |> round(4)
+#>     X1     X1     X1     X1     X1     X1     X1     X1 
+#> 0.0000 0.0000 0.3334 0.1292 0.0000 0.0000 0.3906 0.3862
 ```
 
 ## Example II
 
 ``` r
-fit1 <- feols(Y1 ~ X1 + X2, data = data, cluster = ~ group_id)
-fit2 <- feols(Y2 ~ X1 + X2, data = data, cluster = ~ group_id)
-fit3 <- feols(Y3 ~ X1 + X2, data = data, cluster = ~ group_id)
-fit4 <- feols(Y4 ~ X1 + X2, data = data, cluster = ~ group_id)
+fit1 <- feols(Y1 ~ X1 , data = data)
+fit2 <- feols(Y1 ~ X1 + X2, data = data)
+fit3 <- feols(Y2 ~ X1, data = data)
+fit4 <- feols(Y2 ~ X1 + X2, data = data)
 
 res_rwolf <- rwolf(
   models = list(fit1, fit2, fit3, fit4), 
   param = "X1",  
-  B = 9999,
-  nthreads = 2
+  B = 9999
 )
+#>   |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%
 summary(res_rwolf)
-#>     model depvar    Estimate Std. Error   t value      Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     Y1   0.9957882 0.01038199  95.91493 1.487056e-168      0.0001
-#> 2 Model 2     Y2 0.008968811 0.01012741 0.8855978     0.3769031      0.4119
-#> 3 Model 3     Y3   0.0119422 0.01001154  1.192844     0.2343508      0.4119
-#> 4 Model 4     Y4  0.02104872 0.01017059  2.069567    0.03978448      0.1147
+#>   model   Estimate Std. Error  t value   Pr(>|t|) RW Pr(>|t|)
+#> 1     1   1.015905 0.01996994 50.87171          0      0.0001
+#> 2     2   1.014589 0.01397591 72.59557          0      0.0001
+#> 3     3 0.03139199 0.02002123 1.567936  0.1169595      0.1123
+#> 4     4 0.03008817 0.01418312 2.121407 0.03393663      0.0610
 ```
 
-## Example III
-
-``` r
-base = iris
-names(base) = c("y1", "y2", "x1", "x2", "species")
-
-# no clustering, heteroskedastic wild bootstrap
-res_multi = feols(c(y1, y2) ~ x1 + csw(x2, x2^2) | sw(species),
-                  data = base)
-
-res_rwolf2 <- rwolf(models = res_multi, param = "x1", B = 9999, nthreads = 2)
-
-summary(res_rwolf2)
-#>     model depvar  Estimate Std. Error  t value    Pr(>|t|) RW Pr(>|t|)
-#> 1 Model 1     y1 0.9059459 0.08138023 11.13226 0.007972879       1e-04
-#> 2 Model 2     y1 0.8996897 0.08366698 10.75322 0.008537546       1e-04
-```
-
-## Performance
-
-Using the wild cluster bootstrap implementations in `fwildclusterboot`
-is fast:
-
-``` r
-microbenchmark::microbenchmark(res_rwolf1 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "R"),
-                               res_rwolf2 = rwolf(models = res, param = "X1", B = 99999, boot_algo = "WildBootTests.jl"),
-                               times = 1)
-# Unit: seconds
-# expr         min       lq       mean    median    uq       max    neval
-# res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1
-# res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1
-```
-
-## Comparison with Stata’s rwolf package
-
-``` r
-library(RStata)
-# initiate RStata
-options("RStata.StataVersion" = 16)
-options("RStata.StataPath" = "\"C:\\Program Files\\Stata16\\StataIC-64\"")
-# save the data set so it can be loaded into STATA
-data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
-
-# estimate with stata via Rstata
-stata_program <- "
-clear 
-set more off
-import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
-set seed 1
-rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots
-"
-RStata::stata(stata_program, data.out = TRUE)
-
-#> . 
-#> . clear 
-#> . set more off
-#> . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
-#> (7 vars, 10,000 obs)
-#> . set seed 1
-#> . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont
-#> > rols(x2) reps(1000) nodots
-#> Bootstrap replications (1000). This may take some time.
-#> 
-#> 
-#> 
-#> 
-#> Romano-Wolf step-down adjusted p-values
-#> 
-#> 
-#> Independent variable:  x1
-#> Outcome variables:   y1 y2 y3 y4
-#> Number of resamples: 1000
-#> 
-#> 
-#> ------------------------------------------------------------------------------
-#>    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value
-#> --------------------+---------------------------------------------------------
-#>                  y1 |    0.0000             0.0010              0.0010
-#>                  y2 |    0.3769             0.3756              0.4166
-#>                  y3 |    0.2344             0.2408              0.4166
-#>                  y4 |    0.0398             0.0410              0.1179
-#> ------------------------------------------------------------------------------
-```
+<!-- ## Performance -->
+<!-- Using the wild cluster bootstrap implementations in `fwildclusterboot` is fast:  -->
+<!-- ```{r, eval = FALSE} -->
+<!-- microbenchmark::microbenchmark( -->
+<!--   res_rwolf1 = rwolf( -->
+<!--     models = fit,  -->
+<!--     param = "X1", -->
+<!--     B = 9999,  -->
+<!--     boot_algo = "R" -->
+<!--   ), -->
+<!--   times = 1 -->
+<!-- ) -->
+<!-- # Unit: seconds -->
+<!-- # expr         min       lq       mean    median    uq       max    neval -->
+<!-- # res_rwolf1 3.562108 3.562108 3.562108 3.562108 3.562108 3.562108     1 -->
+<!-- # res_rwolf2 1.778090 1.778090 1.778090 1.778090 1.778090 1.778090     1 -->
+<!-- ``` -->
+<!-- ## Comparison with Stata's rwolf package  -->
+<!-- ```{r, eval = FALSE} -->
+<!-- library(RStata) -->
+<!-- # initiate RStata -->
+<!-- options("RStata.StataVersion" = 16) -->
+<!-- options("RStata.StataPath" = "\"C:\\Program Files\\Stata16\\StataIC-64\"") -->
+<!-- # save the data set so it can be loaded into STATA -->
+<!-- data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv") -->
+<!-- # estimate with stata via Rstata -->
+<!-- stata_program <- " -->
+<!-- clear  -->
+<!-- set more off -->
+<!-- import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
+<!-- set seed 1 -->
+<!-- rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots -->
+<!-- " -->
+<!-- RStata::stata(stata_program, data.out = TRUE) -->
+<!-- #> .  -->
+<!-- #> . clear  -->
+<!-- #> . set more off -->
+<!-- #> . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
+<!-- #> (7 vars, 10,000 obs) -->
+<!-- #> . set seed 1 -->
+<!-- #> . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont -->
+<!-- #> > rols(x2) reps(1000) nodots -->
+<!-- #> Bootstrap replications (1000). This may take some time. -->
+<!-- #>  -->
+<!-- #>  -->
+<!-- #>  -->
+<!-- #>  -->
+<!-- #> Romano-Wolf step-down adjusted p-values -->
+<!-- #>  -->
+<!-- #>  -->
+<!-- #> Independent variable:  x1 -->
+<!-- #> Outcome variables:   y1 y2 y3 y4 -->
+<!-- #> Number of resamples: 1000 -->
+<!-- #>  -->
+<!-- #>  -->
+<!-- #> ------------------------------------------------------------------------------ -->
+<!-- #>    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value -->
+<!-- #> --------------------+--------------------------------------------------------- -->
+<!-- #>                  y1 |    0.0000             0.0010              0.0010 -->
+<!-- #>                  y2 |    0.3769             0.3756              0.4166 -->
+<!-- #>                  y3 |    0.2344             0.2408              0.4166 -->
+<!-- #>                  y4 |    0.0398             0.0410              0.1179 -->
+<!-- #> ------------------------------------------------------------------------------ -->
+<!-- ``` -->

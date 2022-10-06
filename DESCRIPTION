@@ -12,10 +12,13 @@ RoxygenNote: 7.2.0
 Imports: 
   fixest, 
   fwildclusterboot, 
-  dreamerr
+  dreamerr, 
+  wildwyoung
 URL: https://s3alfisc.github.io/wildrwolf/
 Suggests: 
     covr,
     testthat (>= 3.0.0)
-Remotes: s3alfisc/fwildclusterboot
+Remotes: 
+  s3alfisc/fwildclusterboot, 
+  s3alfisc/wildwyoung
 Config/testthat/edition: 3

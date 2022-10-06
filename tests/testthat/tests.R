@@ -1,43 +1,56 @@
 test_that("test wildrwolf against Stata's rwolf", {
   
-  
+
+  ## create data + run rwolf in R
+  library(MASS)
   library(fixest)
   library(wildrwolf)
   
-  set.seed(8)
-  N <- 10000
-  X1 <- rnorm(N)
-  X2 <- rnorm(N)
-  Y1 <- 1 + 1 * X1 + X2 + rnorm(N)
-  Y2 <- 1 + 0.01 * X1 + X2 + rnorm(N)
-  Y3 <- 1 + 0.01 * X1 + X2 + rnorm(N)
-  Y4 <- 1 + 0.01 * X1 + X2 + rnorm(N)
+  set.seed(986)
+  N <- 5000
+  s <- 10
+  rho <- 0.2
+  D <- sample(c(0,1), N, TRUE)
+  Sigma <- matrix(rho, s, s); diag(Sigma) <- 1
+  e <- MASS::mvrnorm(n = N, mu = rep(0, s), Sigma)
+  intercept <- rnorm(s)
+  effect <- rep(0, s)
+  # true effect of beta_1 = 0 in each simulations
+  Y <- intercept + e 
   
-  # intra-cluster correlation of 0 for all clusters
-  numb_clusters <- N / 50
-  group_id <- as.character(sample(1:numb_clusters, N, replace = TRUE))
+  df <- data.frame(Y = Y)
+  names(df) <- paste0("Y", 1:s)
+  df$treatment <- D
+  df$cluster <- sample(letters, N, TRUE)
+  df$X1 <- rnorm(N)
+  df$X2 <- rnorm(N)
   
-  data <- data.frame(Y1 = Y1, 
-                     Y2 = Y2, 
-                     Y3 = Y3, 
-                     Y4 = Y4,
-                     X1 = X1,
-                     X2 = X2,
-                     group_id = group_id, 
-                     splitvar = sample(1:2, N, TRUE))
+  write.csv(df, file = "C:/Users/alexa/Dropbox/wildrwolf/tests/data.csv")
   
-  res <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2, 
-               data = data,
-               cluster = ~ group_id, 
-               ssc = ssc(cluster.adj = TRUE))
+  fit <- feols(c(Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9, Y10) ~ treatment, data = df)
   
-  # clean workspace except for res & data
-  rm(list= ls()[!(ls() %in% c('res','data'))])
+  etable(fit)
+  fit_padjust <- rwolf(fit, param = ~treatment, B = 999)
   
-  res_rwolf <- rwolf(models = res, param = "X1", B = 9999, nthreads = 1)
-
+  
+  ## run everything via rwolf.ado
+  
+  run_stata <- FALSE
+  if(run_stata){
+    library(RStata)
+    options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"") 
+    options("RStata.StataVersion" = 17)
+    
+    res <- stata("C:/Users/alexa/Dropbox/wildrwolf/tests/Stata/stata_tests.do")
+    saveRDS(res, "C:/Users/alexa/Dropbox/wildrwolf/tests/data/stata_resultsI.rds")
+  }
+  
   # stata results
   stata_res <- c(0.0010, 0.4166, 0.4166, 0.1179)
+  
+  
+  ## test for equivalence
+  
   
   expect_equal(res_rwolf$pval, stata_res, tolerance = 0.1)
     

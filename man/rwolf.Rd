@@ -49,6 +49,9 @@ will use each possible combination once (enumeration).}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
+\value{
+An object of type `rwolf`
+}
 \description{
 Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
 Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. For the wild cluster bootstrap, 
