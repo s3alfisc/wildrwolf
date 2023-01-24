@@ -22,7 +22,7 @@ thoroughly tested.
 
 Because the bootstrap-resampling is based on the
 [fwildclusterboot](https://github.com/s3alfisc/fwildclusterboot)
-package, `wildwyoung` is usually really fast.
+package, `wildrwolf` is usually really fast.
 
 The package is complementary to
 [wildwyoung](https://github.com/s3alfisc/wildwyoung), which implements
@@ -145,8 +145,8 @@ summary(res_rwolf)
 
 ## Performance
 
-The above procedures with `S=8` hypotheses, `N=5000` observations and
-`k %in% (1,2)` parameters finish each in around 3.5 seconds.
+The above procedure with `S=8` hypotheses, `N=5000` observations and
+`k %in% (1,2)` parameters finises in around 3.5 seconds.
 
 ``` r
 if(requireNamespace("microbenchmark")){
@@ -172,22 +172,15 @@ if(requireNamespace("microbenchmark")){
 
 We test $S=6$ hypotheses and generate data as
 
-$$
-  Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s}
-$$ where $D_i = 1(U_i > 0.5)$ and $U_i$ is drawn from a uniform
+$$Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s} $$
+where $D_i = 1(U_i > 0.5)$ and $U_i$ is drawn from a uniform
 distribution, $u_{i,g}$ is a cluster level shock with intra-cluster
 correlation $0.5$, and the idiosyncratic error term is drawn from a
 multivariate random normal distribution with mean $0_S$ and covariance
 matrix
 
-$$
-\Sigma = \begin{bmatrix}
-1 & \rho & \dots & \rho  \\ 
-\rho & 1 & \dots \rho \\
-\vdots & \vdots & \ddots & \vdots \\
-\rho & \rho & \rho & 1 \\ 
-\end{bmatrix}
-$$ with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$.
+$$\Sigma = \begin{bmatrix} 1 & \rho & \dots & \rho  \\ \rho & 1 & \dots \rho \\\vdots & \vdots & \ddots & \vdots \\\rho & \rho & \rho & 1 \\ \end{bmatrix}$$
+with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$.
 
 This experiment imposes a data generating process as in equation (9) in
 [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an
@@ -217,7 +210,7 @@ res
 #>                 reject_5 reject_10 rho
 #> fit_pvalue         0.259     0.456 0.5
 #> fit_pvalue_holm    0.043     0.095 0.5
-#> fit_padjust_rw     0.043     0.092 0.5
+#> fit_padjust_rw     0.041     0.093 0.5
 ```
 
 <!-- ## Comparison with Stata's rwolf package  -->
