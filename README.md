@@ -53,7 +53,6 @@ install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 
 ``` r
 library(wildrwolf)
-library(wildwyoung)
 library(fixest)
 
 set.seed(1412)
@@ -98,14 +97,6 @@ res_rwolf <- wildrwolf::rwolf(
 )
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 
-res_wyoung <- wildwyoung::wyoung(
-  models = fit,
-  param = "X1", 
-  B = 9999,
-  seed = 23
-)
-#>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
-
 pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
 
 # Romano-Wolf Corrected P-values
@@ -120,22 +111,14 @@ summary(res_rwolf)
 #> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599      0.3908
 #> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104      0.3513
 
-# Westfall-Young Corrected P-values
-summary(res_wyoung)
-#>   model    Estimate Std. Error   t value      Pr(>|t|) WY Pr(>|t|)
-#> 1     1    1.015905 0.02023716  50.19996             0   0.0000000
-#> 2     2    1.014589 0.01416664  71.61819             0   0.0000000
-#> 3     3  0.03139199 0.01970187  1.593351     0.1111447   0.3009301
-#> 4     4  0.03008817  0.0140508  2.141384     0.0322913   0.1183118
-#> 5     5   0.3876217 0.01996071  19.41924  4.817655e-81   0.0000000
-#> 6     6   0.3863082 0.01397504  27.64272 1.228595e-156   0.0000000
-#> 7     7 -0.01675694 0.01951484 -0.858677     0.3905599   0.3885389
-#> 8     8 -0.01807432 0.01388615 -1.301608     0.1931104   0.3539354
-
 # Holm Corrected P-values
 p.adjust(pvals, method = "holm") |> round(4)
-#>     X1     X1     X1     X1     X1     X1     X1     X1 
-#> 0.0000 0.0000 0.3334 0.1292 0.0000 0.0000 0.3906 0.3862
+#>      lhs: Y1; rhs: X1.X1 lhs: Y1; rhs: X1 + X2.X1      lhs: Y2; rhs: X1.X1 
+#>                   0.0000                   0.0000                   0.3334 
+#> lhs: Y2; rhs: X1 + X2.X1      lhs: Y3; rhs: X1.X1 lhs: Y3; rhs: X1 + X2.X1 
+#>                   0.1292                   0.0000                   0.0000 
+#>      lhs: Y4; rhs: X1.X1 lhs: Y4; rhs: X1 + X2.X1 
+#>                   0.3906                   0.3862
 ```
 
 ## Example II
@@ -156,8 +139,8 @@ summary(res_rwolf)
 #>   model   Estimate Std. Error  t value   Pr(>|t|) RW Pr(>|t|)
 #> 1     1   1.015905 0.01996994 50.87171          0      0.0001
 #> 2     2   1.014589 0.01397591 72.59557          0      0.0001
-#> 3     3 0.03139199 0.02002123 1.567936  0.1169595      0.1123
-#> 4     4 0.03008817 0.01418312 2.121407 0.03393663      0.0610
+#> 3     3 0.03139199 0.02002123 1.567936  0.1169595      0.1103
+#> 4     4 0.03008817 0.01418312 2.121407 0.03393663      0.0608
 ```
 
 ## Performance
@@ -169,12 +152,6 @@ The above procedures with `S=8` hypotheses, `N=5000` observations and
 if(requireNamespace("microbenchmark")){
   
   microbenchmark::microbenchmark(
-    "Westfall-Young" = wildwyoung::wyoung(
-      models = fit,
-      param = "X1", 
-      B = 9999,
-      seed = 23
-    ),
     "Romano-Wolf" = wildrwolf::rwolf(
       models = fit,
       param = "X1", 
@@ -186,10 +163,61 @@ if(requireNamespace("microbenchmark")){
  
  # t: seconds
  #           expr      min       lq     mean   median       uq      max neval
- # Westfall-Young 3.625710 3.625710 3.625710 3.625710 3.625710 3.625710     1
  #    Romano-Wolf 3.382969 3.382969 3.382969 3.382969 3.382969 3.382969     1
    
 }
+```
+
+## But does it work? Monte Carlo Experiments
+
+We test $S=6$ hypotheses and generate data as
+
+$$
+  Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s}
+$$ where $D_i = 1(U_i > 0.5)$ and $U_i$ is drawn from a uniform
+distribution, $u_{i,g}$ is a cluster level shock with intra-cluster
+correlation $0.5$, and the idiosyncratic error term is drawn from a
+multivariate random normal distribution with mean $0_S$ and covariance
+matrix
+
+$$
+\Sigma = \begin{bmatrix}
+1 & \rho & \dots & \rho  \\ 
+\rho & 1 & \dots \rho \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho & \rho & \rho & 1 \\ 
+\end{bmatrix}
+$$ with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$.
+
+This experiment imposes a data generating process as in equation (9) in
+[Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an
+additional error term $u_g$ for $G=20$ clusters and intra-cluster
+correlation 0.5 and $N=1000$ observations.
+
+You can run the simulations via the `run_fwer_sim()` function attached
+in the package.
+
+``` r
+# note that this will take some time
+res <- run_fwer_sim(
+  seed = 76,
+  n_sims = 1000,
+  B = 499,
+  N = 1000,
+  s = 6, 
+  rho = 0.5 #correlation between hypotheses, not intra-cluster!
+)
+```
+
+Both Holm’s method and `wildrwolf` control the family wise error rates,
+at both the 5 and 10% significance level.
+
+``` r
+res
+#>                 reject_5 reject_10 rho
+#> fit_pvalue         0.259     0.456 0.5
+#> fit_pvalue_holm    0.043     0.095 0.5
+#> fit_padjust_rw     0.043     0.092 0.5
 ```
 
 <!-- ## Comparison with Stata's rwolf package  -->

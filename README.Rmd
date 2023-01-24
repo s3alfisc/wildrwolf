@@ -52,7 +52,6 @@ install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 
 ```{r, warning=FALSE, message = FALSE}
 library(wildrwolf)
-library(wildwyoung)
 library(fixest)
 
 set.seed(1412)
@@ -96,20 +95,10 @@ res_rwolf <- wildrwolf::rwolf(
   seed = 23
 )
 
-res_wyoung <- wildwyoung::wyoung(
-  models = fit,
-  param = "X1", 
-  B = 9999,
-  seed = 23
-)
-
 pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
 
 # Romano-Wolf Corrected P-values
 summary(res_rwolf)
-
-# Westfall-Young Corrected P-values
-summary(res_wyoung)
 
 # Holm Corrected P-values
 p.adjust(pvals, method = "holm") |> round(4)
@@ -139,12 +128,6 @@ The above procedures with `S=8` hypotheses, `N=5000` observations and `k %in% (1
 if(requireNamespace("microbenchmark")){
   
   microbenchmark::microbenchmark(
-    "Westfall-Young" = wildwyoung::wyoung(
-      models = fit,
-      param = "X1", 
-      B = 9999,
-      seed = 23
-    ),
     "Romano-Wolf" = wildrwolf::rwolf(
       models = fit,
       param = "X1", 
@@ -156,7 +139,6 @@ if(requireNamespace("microbenchmark")){
  
  # t: seconds
  #           expr      min       lq     mean   median       uq      max neval
- # Westfall-Young 3.625710 3.625710 3.625710 3.625710 3.625710 3.625710     1
  #    Romano-Wolf 3.382969 3.382969 3.382969 3.382969 3.382969 3.382969     1
    
 }
@@ -165,9 +147,7 @@ if(requireNamespace("microbenchmark")){
 
 ## But does it work? Monte Carlo Experiments
 
-We run experiments assuming a data generating process as in equation (9) in [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an additional error term $u_g$ for $G=20$ clusters and intra-cluster correlation 0.5 and $N=1000$ observations. 
-
-In consequence, we test $S=10$ hypotheses and generate data as 
+We test $S=6$ hypotheses and generate data as 
 
 $$
   Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s}
@@ -182,28 +162,31 @@ $$
 \rho & \rho & \rho & 1 \\ 
 \end{bmatrix}
 $$
-with $\rho \geq 0$. 
+with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$. 
 
-Following Clarke et al, we set $B=4999$ and the number of Monte Carlo simulations to $5000$.
+This experiment imposes a data generating process as in equation (9) in [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an additional error term $u_g$ for $G=20$ clusters and intra-cluster correlation 0.5 and $N=1000$ observations. 
 
-You can replicate the results below by running the `run_fwer_sim()` function attached in the package. 
+You can run the simulations via the `run_fwer_sim()` function attached in the package. 
 
 
-```{r, message = FALSE}
+```{r, message = FALSE, results = "hide"}
 # note that this will take some time
 res <- run_fwer_sim(
-  seed = 4234,
-  n_sims = 100,
+  seed = 76,
+  n_sims = 1000,
   B = 499,
   N = 1000,
-  s = 10, 
-  rho = 0.5
+  s = 6, 
+  rho = 0.5 #correlation between hypotheses, not intra-cluster!
 )
-
-res
 ```
 
 Both Holm's method and `wildrwolf` control the family wise error rates, at both the 5 and 10% significance level. 
+
+```{r}
+res
+```
+
 
 <!-- ## Comparison with Stata's rwolf package  -->
 
