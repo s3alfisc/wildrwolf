@@ -163,6 +163,48 @@ if(requireNamespace("microbenchmark")){
 ```
 
 
+## But does it work? Monte Carlo Experiments
+
+We run experiments assuming a data generating process as in equation (9) in [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an additional error term $u_g$ for $G=20$ clusters and intra-cluster correlation 0.5 and $N=1000$ observations. 
+
+In consequence, we test $S=10$ hypotheses and generate data as 
+
+$$
+  Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s}
+$$
+where $D_i = 1(U_i > 0.5)$ and $U_i$ is drawn from a uniform distribution, $u_{i,g}$ is a cluster level shock with intra-cluster correlation $0.5$, and the idiosyncratic error term is drawn from a multivariate random normal distribution with mean $0_S$ and covariance matrix 
+
+$$
+\Sigma = \begin{bmatrix}
+1 & \rho & \dots & \rho  \\ 
+\rho & 1 & \dots \rho \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho & \rho & \rho & 1 \\ 
+\end{bmatrix}
+$$
+with $\rho \geq 0$. 
+
+Following Clarke et al, we set $B=4999$ and the number of Monte Carlo simulations to $5000$.
+
+You can replicate the results below by running the `run_fwer_sim()` function attached in the package. 
+
+
+```{r, message = FALSE}
+# note that this will take some time
+res <- run_fwer_sim(
+  seed = 4234,
+  n_sims = 100,
+  B = 499,
+  N = 1000,
+  s = 10, 
+  rho = 0.5
+)
+
+res
+```
+
+Both Holm's method and `wildrwolf` control the family wise error rates, at both the 5 and 10% significance level. 
+
 <!-- ## Comparison with Stata's rwolf package  -->
 
 <!-- ```{r, eval = FALSE} -->

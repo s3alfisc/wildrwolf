@@ -1,15 +1,3 @@
-# models = fit
-# param = "X1"
-# B = 9999
-# R = NULL
-# r = 0
-# p_val_type = "two-tailed"
-# weights_type = "rademacher"
-# seed = NULL
-# engine = "R"
-# nthreads = 1
-
-
 #' Romano-Wolf multiple hypotheses adjusted p-values 
 #' 
 #' Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
@@ -29,7 +17,8 @@
 #'                     wild bootstrap factors. "rademacher" by default.  
 #'                     For the Rademacher distribution, if the number of replications B exceeds 
 #'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
-#'                     will use each possible combination once (enumeration).               
+#'                     will use each possible combination once (enumeration). 
+#' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11".              
 #' @param seed Integer. Sets the random seed. NULL by default. 
 #' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
 #' @param nthreads Integer. The number of threads to use. 
@@ -77,13 +66,27 @@
 #' @references 
 #' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
 
-rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", weights_type = "rademacher", seed = NULL, engine = "R", nthreads = 1, ...){
+rwolf <- function(
+    models,
+    param,
+    B,
+    R = NULL,
+    r = 0,
+    p_val_type = "two-tailed",
+    weights_type = "rademacher",
+    seed = NULL, 
+    engine = "R",
+    nthreads = 1,
+    bootstrap_type = NULL,
+  ...){
   
 
   check_arg(param, "character vector | character scalar | formula")
   check_arg(R, "NULL | numeric vector")
   check_arg(r, "NULL | numeric scalar")
   check_arg(p_val_type, "charin(two_sided, >, <)")
+  check_arg(weights_type, "charin(rademacher, mammen, webb, norm)")
+  check_arg(bootstrap_type, "charin(11, 12, 13, 31, 33, fnw11)")
   check_arg(B, "integer scalar GT{99}")
   check_arg(seed, "integer scalar | NULL")
   check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
@@ -155,7 +158,13 @@ rwolf <- function(models, param, B, R = NULL, r = 0, p_val_type = "two-tailed", 
                boottest_quote$clustid <- formula(clustid)
              }
              
-             boottest_eval <- eval(boottest_quote)
+             if(!is.null(bootstrap_type)){
+               boottest_quote$bootstrap_type <- bootstrap_type
+             }
+             
+             suppressMessages(
+               boottest_eval <- eval(boottest_quote)
+             )
            
            })
   

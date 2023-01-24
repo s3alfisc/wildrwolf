@@ -15,6 +15,7 @@ rwolf(
   seed = NULL,
   engine = "R",
   nthreads = 1,
+  bootstrap_type = NULL,
   ...
 )
 }
@@ -46,6 +47,8 @@ will use each possible combination once (enumeration).}
 \item{engine}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
 
 \item{nthreads}{Integer. The number of threads to use.}
+
+\item{bootstrap_type}{Either "11", "13", "31", "33", or "fnw11".}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
