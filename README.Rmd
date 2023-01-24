@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 
 [![Codecov test coverage](https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/rwolf?branch=main)
+[![R-CMD-check](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest` and `fixest_multi` from the `fixest` package via a wild cluster bootstrap. At its current stage, the package is experimental and it is not thoroughly tested.
@@ -152,7 +153,15 @@ We test $S=6$ hypotheses and generate data as
 $$Y_{i,s,g} = \beta_{0} + \beta_{1,s} D_{i} + u_{i,g} + \epsilon_{i,s} $$
 where $D_i = 1(U_i > 0.5)$ and $U_i$ is drawn from a uniform distribution, $u_{i,g}$ is a cluster level shock with intra-cluster correlation $0.5$, and the idiosyncratic error term is drawn from a multivariate random normal distribution with mean $0_S$ and covariance matrix 
 
-$$\Sigma = \begin{bmatrix} 1 & \rho & \dots & \rho  \\ \rho & 1 & \dots \rho \\\vdots & \vdots & \ddots & \vdots \\\rho & \rho & \rho & 1 \\ \end{bmatrix}$$
+```{r}
+S <- 6
+rho <- 0.5
+Sigma <- matrix(rho, 6, 6)
+diag(Sigma) <- 1
+Sigma
+```
+
+
 with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$. 
 
 This experiment imposes a data generating process as in equation (9) in [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an additional error term $u_g$ for $G=20$ clusters and intra-cluster correlation 0.5 and $N=1000$ observations. 
