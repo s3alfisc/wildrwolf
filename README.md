@@ -179,8 +179,13 @@ correlation $0.5$, and the idiosyncratic error term is drawn from a
 multivariate random normal distribution with mean $0_S$ and covariance
 matrix
 
-$$\Sigma = \begin{bmatrix} 1 & \rho & \dots & \rho  \\ \rho & 1 & \dots \rho \\\vdots & \vdots & \ddots & \vdots \\\rho & \rho & \rho & 1 \\ \end{bmatrix}$$
-with $\rho \geq 0$. We assume that $\beta_{1,s}= 0$ for all $s$.
+```{r, eval = FALSE}
+S <- 6
+rho <- 0.5
+Sigma <- matrix(1, 6, 6)
+diag(Sigma) <- rho
+Sigma
+```
 
 This experiment imposes a data generating process as in equation (9) in
 [Clarke, Romano and Wolf](https://docs.iza.org/dp12845.pdf), with an
