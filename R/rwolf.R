@@ -92,6 +92,10 @@ rwolf <- function(
   check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
   check_arg(nthreads, "scalar integer")
   
+  if(is.null(seed)){
+    seed <- sample.int(2147483647L, 1)
+  }
+  
   if (inherits(param, "formula")) {
     param <- attr(terms(param), "term.labels")
   }
@@ -150,7 +154,8 @@ rwolf <- function(
                    r = r,
                    engine = engine,
                    p_val_type = p_val_type,
-                   type = weights_type
+                   type = weights_type, 
+                   seed = seed
                  )
                )
              
@@ -242,7 +247,6 @@ rwolf <- function(
     call = call,
     models_info = models_info,
     coefs = coefs,
-    # ses = ses,
     t_stats = t_stats,
     boot_coefs = boot_coefs,
     boot_ses = boot_ses,
