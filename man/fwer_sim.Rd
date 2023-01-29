@@ -5,7 +5,7 @@
 \title{Simulate data as in Clarke, Romano & Wolf (2019) to simulate family wise
 error rates (FWERs)}
 \usage{
-fwer_sim(rho, N, s, B)
+fwer_sim(rho, N, s, B, G = 20)
 }
 \arguments{
 \item{rho}{The correlation between the outcome variables}
@@ -14,8 +14,9 @@ fwer_sim(rho, N, s, B)
 
 \item{s}{The number of dependent variables}
 
-\item{B}{The number of bootstrap draws employed in the 'rwolf()' and
-'wyoung()' procedures}
+\item{B}{The number of bootstrap draws e}
+
+\item{G}{The number of clusters. If NULL, no clustering.}
 }
 \value{
 A 'data.frame' containing unadjusted p-values & p-values adjusted using the

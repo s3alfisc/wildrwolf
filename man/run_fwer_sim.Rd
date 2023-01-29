@@ -12,7 +12,8 @@ run_fwer_sim(
   seed = 114411,
   B = 499,
   N = 1000,
-  s = 6
+  s = 6,
+  G = 20
 )
 }
 \arguments{
@@ -22,12 +23,13 @@ run_fwer_sim(
 
 \item{seed}{A random seed.}
 
-\item{B}{The number of bootstrap draws emplozed in the 'rwolf()' and
-'wyoung' procedures}
+\item{B}{The number of bootstrap draws}
 
 \item{N}{The number of observations}
 
 \item{s}{The number of dependent variables}
+
+\item{G}{The number of clusters. If NULL, no clustering. 20 by default}
 }
 \description{
 In general, this is a wrapper around `fwer_sim()`. See `?fwer_sim()`
