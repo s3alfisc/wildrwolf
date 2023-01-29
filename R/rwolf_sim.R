@@ -1,4 +1,4 @@
-fwer_sim <- function(rho, N, s, B){
+fwer_sim <- function(rho, N, s, B, G = 20){
 
   #' Simulate data as in Clarke, Romano & Wolf (2019) to simulate family wise
   #' error rates (FWERs)
@@ -6,8 +6,8 @@ fwer_sim <- function(rho, N, s, B){
   #' @param rho The correlation between the outcome variables
   #' @param N The number of observations
   #' @param s The number of dependent variables
-  #' @param B The number of bootstrap draws employed in the 'rwolf()' and
-  #' 'wyoung()' procedures
+  #' @param B The number of bootstrap draws e
+  #' @param G The number of clusters. If NULL, no clustering.
   #'
   #' @importFrom stats p.adjust
   #' @importFrom MASS mvrnorm
@@ -38,18 +38,29 @@ fwer_sim <- function(rho, N, s, B){
 
       Sigma <- matrix(rho, s, s); diag(Sigma) <- 1
       e <- MASS::mvrnorm(n = N, mu = rep(0, s), Sigma)
-      clusters <- sample(1:20, N, TRUE)
-
-      Y <- matrix(NA, N, s)
-      for(x in 1:s){
-        cluster_error <- fabricatr::draw_normal_icc(clusters = clusters, ICC = 0.5)
-        Y[,x] <- intercept + beta[x] * treatment + cluster_error + e[,x]
-      }
-
-      data2 <- cbind(Y, clusters, treatment)
-      data2 <- as.data.frame(data2)
       
-      names(data2) <- c(paste0("Y", 1:s), "cluster", "treatment")
+      if(is.null(G)){
+        Y <- matrix(NA, N, s)
+        for(x in 1:s){
+          Y[,x] <- intercept + beta[x] * treatment + e[,x]
+        } 
+        data2 <- cbind(Y, treatment)
+        data2 <- as.data.frame(data2)
+        names(data2) <- c(paste0("Y", 1:s), "treatment")
+        
+      } else {
+        Y <- matrix(NA, N, s)
+        clusters <- sample(1:G, N, TRUE)
+        for(x in 1:s){
+          cluster_error <- fabricatr::draw_normal_icc(clusters = clusters, ICC = 0.5)
+          Y[,x] <- intercept + beta[x] * treatment + cluster_error + e[,x]
+        }
+        data2 <- cbind(Y, clusters, treatment)
+        data2 <- as.data.frame(data2)
+        names(data2) <- c(paste0("Y", 1:s), "cluster", "treatment")
+      }   
+
+
       data2 <<- data2
       
       if(s == 6){
@@ -60,11 +71,19 @@ fwer_sim <- function(rho, N, s, B){
         fml <- c(Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9, Y10) ~ treatment
       }
 
-      fit <- fixest::feols(
-        fml,
-        data = data2,
-        cluster= ~cluster
-      )
+      if(is.null(G)){
+        fit <- fixest::feols(
+          fml,
+          data = data2
+        )
+      } else {
+        fit <- fixest::feols(
+          fml,
+          data = data2,
+          cluster= ~cluster
+        )
+      }
+
 
     fit_pvalue <- lapply(fit, function(x) fixest::pvalue(x))
     fit_pvalue <- Reduce("rbind", fit_pvalue)[,"treatment"]
@@ -105,7 +124,8 @@ run_fwer_sim <- function(
     seed = 114411,
     B = 499,
     N = 1000,
-    s = 6){
+    s = 6, 
+    G = 20){
 
   #' Run a MC simulation study on family-wise error rates (FWERs)
   #' for the Holm, Westfall & Young and Romano & Wolf Methods multiple
@@ -119,8 +139,8 @@ run_fwer_sim <- function(
   #' @param seed A random seed.
   #' @param N The number of observations
   #' @param s The number of dependent variables
-  #' @param B The number of bootstrap draws emplozed in the 'rwolf()' and
-  #' 'wyoung' procedures
+  #' @param B The number of bootstrap draws
+  #' @param G The number of clusters. If NULL, no clustering. 20 by default
   #'
   #' @export
   #'
@@ -148,7 +168,7 @@ run_fwer_sim <- function(
     all_rho_i <- list()
     for(i in 1:n_sims){
       cat("n_sims: ", i, "\n")
-      all_rho_i[[i]] <- fwer_sim(rho = rho[x], B = B, N = N, s = s)
+      all_rho_i[[i]] <- fwer_sim(rho = rho[x], B = B, N = N, s = s, G = G)
     }
     all_rho[[x]] <- all_rho_i
   }
