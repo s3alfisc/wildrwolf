@@ -117,7 +117,7 @@ rwolf <- function(
   # Check if 'models' is of type fixest_multi
   if(!inherits(models, "fixest_multi")){
   } else if(inherits(models, "list")){
-    fixest_list <- mean(sapply(models, class) == "fixest") == 1L
+    fixest_list <- mean(vapply(models, class, "character") == "fixest") == 1L
     if(!fixest_list){
       stop("The object models needs to be either of type 
            'fixest_multi' or a list of objects of type 'fixest'.")
