@@ -182,8 +182,8 @@ run_fwer_sim <- function(
     for(i in 1:n_sims){
       rho_i <- all_rho[[x]][[i]]
       # calculate FWER
-      reject_5[[i]] <- vapply(rho_i, function(x){any(x < 0.05)}, list)
-      reject_10[[i]] <- vapply(rho_i, function(x){any(x < 0.10)}, list)
+      reject_5[[i]] <- sapply(rho_i, function(x){any(x < 0.05)})
+      reject_10[[i]] <- sapply(rho_i, function(x){any(x < 0.10)})
     }
     reject_5 <- Reduce("+", reject_5) / n_sims
     reject_10 <- Reduce("+", reject_10) / n_sims

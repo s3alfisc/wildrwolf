@@ -10,7 +10,8 @@
 #'        type fixest
 #' @param param The regression parameter to be tested
 #' @param R Hypothesis Vector giving linear combinations of coefficients.
-#'  Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
+#'  Must be either NULL or a vector of the same length as `param`. 
+#'  If NULL, a vector of ones of length param.
 #' @param r A numeric. Shifts the null hypothesis 
 #'        H0: param = r vs H1: param != r  
 #' @param B The number of bootstrap iterations
@@ -25,7 +26,7 @@
 #' draw ombinations, 2^(#number of clusters), then `boottest()` will use each 
 #' possible combination once (enumeration). 
 #' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11". 
-#' "fnw11" by default. See `?fwildclusterboot::boottest` for more details        
+#' "fnw11" by default. See `?fwildclusterboot::boottest` for more details  
 #' @param seed Integer. Sets the random seed. NULL by default. 
 #' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R 
 #'        implementation or via WildBootTests.jl? 'R' by default. 
@@ -117,7 +118,7 @@ rwolf <- function(
   # Check if 'models' is of type fixest_multi
   if(!inherits(models, "fixest_multi")){
   } else if(inherits(models, "list")){
-    fixest_list <- mean(vapply(models, class, "character") == "fixest") == 1L
+    fixest_list <- mean(sapply(models, class) == "fixest") == 1L
     if(!fixest_list){
       stop("The object models needs to be either of type 
            'fixest_multi' or a list of objects of type 'fixest'.")
