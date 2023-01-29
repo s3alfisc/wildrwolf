@@ -1,31 +1,39 @@
 #' Romano-Wolf multiple hypotheses adjusted p-values 
 #' 
-#' Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
-#' Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. For the wild cluster bootstrap, 
+#' Function implements the Romano-Wolf multiple hypothesis correction procedure
+#' for objects of type fixest_multi (fixest_multi are objects created by 
+#' `fixest::feols()` that use `feols()` multiple-estimation interface). 
+#' Currently, the command is restricted to two-sided hypotheses and one-way 
+#' clustered standard errors. For the wild cluster bootstrap, 
 #' the null is always imposed.
-#' @param models An object of type fixest_multi or a list of objects of type fixest
+#' @param models An object of type fixest_multi or a list of objects of 
+#'        type fixest
 #' @param param The regression parameter to be tested
-#' @param R Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
+#' @param R Hypothesis Vector giving linear combinations of coefficients.
+#'  Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.
 #' @param r A numeric. Shifts the null hypothesis 
 #'        H0: param = r vs H1: param != r  
 #' @param B The number of bootstrap iterations
 #' @param p_val_type Character vector of length 1. Type of hypothesis test 
-#'        By default "two-tailed". Other options include "equal-tailed", ">" (for one-sided tests) and "<" (for two-sided tests). 
-#' @param weights_type character or function. The character string specifies the type
-#'                     of boostrap to use: One of "rademacher", "mammen", "norm"
-#'                     and "webb". Alternatively, type can be a function(n) for drawing 
-#'                     wild bootstrap factors. "rademacher" by default.  
-#'                     For the Rademacher distribution, if the number of replications B exceeds 
-#'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
-#'                     will use each possible combination once (enumeration). 
-#' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11". "fnw11" by default.           
+#'        By default "two-tailed". Other options include "equal-tailed", ">"
+#'         (for one-sided tests) and "<" (for two-sided tests). 
+#' @param weights_type character or function. The character string specifies 
+#' the type of bootstrap to use: One of "rademacher", "mammen", "norm"
+#' and "webb". Alternatively, type can be a function(n) for drawing 
+#' wild bootstrap factors. "rademacher" by default.  For the Rademacher 
+#' distribution, if the number of replications B exceeds the number of possible
+#' draw ombinations, 2^(#number of clusters), then `boottest()` will use each 
+#' possible combination once (enumeration). 
+#' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11". 
+#' "fnw11" by default. See `?fwildclusterboot::boottest` for more details        
 #' @param seed Integer. Sets the random seed. NULL by default. 
 #' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R 
 #'        implementation or via WildBootTests.jl? 'R' by default. 
 #'        The other option is 'WildBootTests.jl'. Running the bootstrap through 
 #'        WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
 #'        for complex problems (e.g. problems with more than 500 clusters).
-#' @param nthreads Integer. The number of threads to use when running the bootstrap.
+#' @param nthreads Integer. The number of threads to use when running the 
+#' bootstrap.
 #' @param ... additional function values passed to the bootstrap function. 
 #' 
 #' @importFrom fwildclusterboot boottest
@@ -69,7 +77,8 @@
 #' summary(res_rwolf)
 #' 
 #' @references 
-#' Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
+#' Clarke, Romano & Wolf (2019), STATA Journal. 
+#' IZA working paper: https://ftp.iza.org/dp12845.pdf
 
 rwolf <- function(
     models,
@@ -110,7 +119,8 @@ rwolf <- function(
   } else if(inherits(models, "list")){
     fixest_list <- mean(sapply(models, class) == "fixest") == 1L
     if(!fixest_list){
-      stop("The object models needs to be either of type 'fixest_multi' or a list of objects of type 'fixest'.")
+      stop("The object models needs to be either of type 
+           'fixest_multi' or a list of objects of type 'fixest'.")
     }
   }
 
@@ -122,18 +132,25 @@ rwolf <- function(
 
   # define a function to get statistics from fixest_multi object
   get_stats_fixest <- function(x, stat){
-    res <- fixest::coeftable(models[[x]])[which(rownames(fixest::coeftable(models[[x]])) == param), stat]
+    res <- fixest::coeftable(
+      models[[x]])[
+        which(rownames(fixest::coeftable(models[[x]])) == param), stat
+        ]
     res
   }
     
   # and get coefs, t-stats and ses 
   # no absolute values for coefs, ses 
-  coefs <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
-  ses <- unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
+  coefs <- unlist(
+    lapply(1:S, function(x) get_stats_fixest(x, stat = "Estimate")))
+  ses <- unlist(
+    lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
   # absolute value for t-stats
-  t_stats <- abs(unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  t_stats <- abs(
+    unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
   # repeat line: for multiway clustering, it is not clear how many bootstrap 
-  # test statistics will be invalied - for oneway, all vectors of length(boot_coefs) \leq B
+  # test statistics will be invalied - for oneway, 
+  # all vectors of length(boot_coefs) \leq B
   
   boot_coefs <- boot_ses <- matrix(NA, B, S) 
   boot_t_stats <- list()
@@ -195,10 +212,20 @@ rwolf <- function(
   # summarize all results
   models_info <-
     lapply(1:S, function(x){
+      
       tmp <- coeftable(models[[x]])
       tmp1 <- tmp[which(rownames(tmp) == param),]
-      suppressWarnings(tmp1$depvar <- as.character(as.expression(models[[x]]$fml[[2]])))
-      suppressWarnings(tmp1$covars <- as.character(as.expression(models[[x]]$fml[[3]])))
+      
+      suppressWarnings(tmp1$depvar <- as.character(
+        as.expression(models[[x]]$fml[[2]])
+        )
+      )
+      
+      suppressWarnings(tmp1$covars <- as.character(
+        as.expression(models[[x]]$fml[[3]])
+        )
+      )
+      
       tmp1$model <- x
       tmp1
     })

@@ -26,12 +26,16 @@ get_rwolf_pval <- function(t_stats, boot_t_stats){
     if(s == 1){
       max_stat <- apply(boot_t_stats, 1, max)
       pinit[s] <- pmin(1, 
-                       (sum(max_stat >= abs(t_stats[stepdown.index[s]])) + 1) / (B + 1) 
+                       (sum(
+                         max_stat >= abs(
+                           t_stats[stepdown.index[s]])) + 1) / (B + 1) 
       )
     }
     if(s > 1){
-      boot_t_stat_udp <- boot_t_stats[, -stepdown.index[1:(s-1)], drop = FALSE]     # drop max statistic
-      max_stat <- apply(boot_t_stat_udp, 1, max)                                    # for each B, calculate max S
+      boot_t_stat_udp <- boot_t_stats[, -stepdown.index[1:(s-1)], drop = FALSE]     
+      # drop max statistic
+      max_stat <- apply(boot_t_stat_udp, 1, max)                                    
+      # for each B, calculate max S
       pinit[s] <- pmin(1, 
                        (sum(max_stat >= abs(t_stats[stepdown.index[s]])) + 1)
                        / (B + 1)

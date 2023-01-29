@@ -54,7 +54,8 @@ fwer_sim <- function(rho, N, s, B, G = 20){
         Y <- matrix(NA, N, s)
         clusters <- sample(1:G, N, TRUE)
         for(x in 1:s){
-          cluster_error <- fabricatr::draw_normal_icc(clusters = clusters, ICC = 0.5)
+          cluster_error <- fabricatr::draw_normal_icc(
+            clusters = clusters, ICC = 0.5)
           Y[,x] <- intercept + beta[x] * treatment + cluster_error + e[,x]
         }
         data2 <- cbind(Y, clusters, treatment)
@@ -186,7 +187,11 @@ run_fwer_sim <- function(
     }
     reject_5 <- Reduce("+", reject_5) / n_sims
     reject_10 <- Reduce("+", reject_10) / n_sims
-    all_sims[[x]] <- data.frame(reject_5 = reject_5, reject_10 = reject_10, rho = rho[x])
+    all_sims[[x]] <- data.frame(
+      reject_5 = reject_5, 
+      reject_10 = reject_10, 
+      rho = rho[x]
+    )
     
   }
 
