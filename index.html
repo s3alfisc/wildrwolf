@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">wildrwolf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><a href="https://app.codecov.io/gh/s3alfisc/rwolf?branch=main" class="external-link"><img src="https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg" alt="Codecov test coverage"></a> <!-- badges: end --></p>
+<p><a href="https://app.codecov.io/gh/s3alfisc/rwolf?branch=main" class="external-link"><img src="https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <!-- badges: end --></p>
 <p>The <code>wildrwolf</code> package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type <code>fixest</code> and <code>fixest_multi</code> from the <code>fixest</code> package via a wild cluster bootstrap. At its current stage, the package is experimental and it is not thoroughly tested.</p>
 <p>Because the bootstrap-resampling is based on the <a href="https://github.com/s3alfisc/fwildclusterboot" class="external-link">fwildclusterboot</a> package, <code>wildrwolf</code> is usually really fast.</p>
 <p>The package is complementary to <a href="https://github.com/s3alfisc/wildwyoung" class="external-link">wildwyoung</a>, which implements the multiple hypothesis adjustment method following Westfall and Young (1993).</p>
@@ -85,16 +85,16 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1412</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">5000</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span><span class="va">X1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
 <span><span class="va">X2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
 <span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
 <span><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">rho</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">N</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span></span>
 <span><span class="va">Y1</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> </span>
-<span><span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span></span>
+<span><span class="va">Y2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> </span>
 <span><span class="va">Y3</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.4</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span></span>
-<span><span class="va">Y4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="op">-</span><span class="fl">0.02</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span></span>
+<span><span class="va">Y4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="op">-</span><span class="fl">0.02</span> <span class="op">*</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> </span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">x</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">var_char</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Y"</span>, <span class="va">x</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span><span class="va">var_char</span>, <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">var_char</span><span class="op">)</span> <span class="op">+</span> <span class="va">u</span><span class="op">[</span>,<span class="va">x</span><span class="op">]</span><span class="op">)</span></span>
@@ -117,7 +117,7 @@
 <span><span class="co"># clean workspace except for res &amp; data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span>list<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'fit'</span>,<span class="st">'data'</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu">wildrwolf</span><span class="fu">::</span><span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
+<span><span class="va">res_rwolf1</span> <span class="op">&lt;-</span> <span class="fu">wildrwolf</span><span class="fu">::</span><span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
 <span>  models <span class="op">=</span> <span class="va">fit</span>,</span>
 <span>  param <span class="op">=</span> <span class="st">"X1"</span>, </span>
 <span>  B <span class="op">=</span> <span class="fl">9999</span>, </span>
@@ -128,25 +128,25 @@
 <span><span class="va">pvals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">fit</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/coeftable.html" class="external-link">pvalue</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="st">"X1"</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Romano-Wolf Corrected P-values</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   model    Estimate Std. Error   t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
-<span><span class="co">#&gt; 1     1    1.015905 0.02023716  50.19996             0      0.0001</span></span>
-<span><span class="co">#&gt; 2     2    1.014589 0.01416664  71.61819             0      0.0001</span></span>
-<span><span class="co">#&gt; 3     3  0.03139199 0.01970187  1.593351     0.1111447      0.2997</span></span>
-<span><span class="co">#&gt; 4     4  0.03008817  0.0140508  2.141384     0.0322913      0.1240</span></span>
-<span><span class="co">#&gt; 5     5   0.3876217 0.01996071  19.41924  4.817655e-81      0.0001</span></span>
-<span><span class="co">#&gt; 6     6   0.3863082 0.01397504  27.64272 1.228595e-156      0.0001</span></span>
-<span><span class="co">#&gt; 7     7 -0.01675694 0.01951484 -0.858677     0.3905599      0.3908</span></span>
-<span><span class="co">#&gt; 8     8 -0.01807432 0.01388615 -1.301608     0.1931104      0.3513</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf1</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   model     Estimate Std. Error    t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1     1    0.9896609 0.04204902   23.53588  8.811393e-98      0.0001</span></span>
+<span><span class="co">#&gt; 2     2    0.9713667 0.03201663   30.33945 9.318861e-144      0.0001</span></span>
+<span><span class="co">#&gt; 3     3 -0.007682607 0.04222391 -0.1819492     0.8556595      0.9798</span></span>
+<span><span class="co">#&gt; 4     4  -0.02689601 0.03050616 -0.8816584     0.3781741      0.8500</span></span>
+<span><span class="co">#&gt; 5     5     0.411529 0.04299497   9.571561    7.9842e-21      0.0001</span></span>
+<span><span class="co">#&gt; 6     6    0.3925661 0.03096423   12.67805  2.946569e-34      0.0001</span></span>
+<span><span class="co">#&gt; 7     7    0.0206361 0.04405654  0.4684003     0.6396006      0.9542</span></span>
+<span><span class="co">#&gt; 8     8  0.001657765 0.03337464 0.04967138     0.9603942      0.9798</span></span>
 <span></span>
 <span><span class="co"># Holm Corrected P-values</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></span><span class="op">(</span><span class="va">pvals</span>, method <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      lhs: Y1; rhs: X1.X1 lhs: Y1; rhs: X1 + X2.X1      lhs: Y2; rhs: X1.X1 </span></span>
-<span><span class="co">#&gt;                   0.0000                   0.0000                   0.3334 </span></span>
+<span><span class="co">#&gt;                        0                        0                        1 </span></span>
 <span><span class="co">#&gt; lhs: Y2; rhs: X1 + X2.X1      lhs: Y3; rhs: X1.X1 lhs: Y3; rhs: X1 + X2.X1 </span></span>
-<span><span class="co">#&gt;                   0.1292                   0.0000                   0.0000 </span></span>
+<span><span class="co">#&gt;                        1                        0                        0 </span></span>
 <span><span class="co">#&gt;      lhs: Y4; rhs: X1.X1 lhs: Y4; rhs: X1 + X2.X1 </span></span>
-<span><span class="co">#&gt;                   0.3906                   0.3862</span></span></code></pre></div>
+<span><span class="co">#&gt;                        1                        1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-ii">Example II<a class="anchor" aria-label="anchor" href="#example-ii"></a>
@@ -157,23 +157,23 @@
 <span><span class="va">fit3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y2</span> <span class="op">~</span> <span class="va">X1</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">Y2</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res_rwolf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
+<span><span class="va">res_rwolf2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
 <span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="va">fit2</span>, <span class="va">fit3</span>, <span class="va">fit4</span><span class="op">)</span>, </span>
 <span>  param <span class="op">=</span> <span class="st">"X1"</span>,  </span>
 <span>  B <span class="op">=</span> <span class="fl">9999</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   model   Estimate Std. Error  t value   Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
-<span><span class="co">#&gt; 1     1   1.015905 0.01996994 50.87171          0      0.0001</span></span>
-<span><span class="co">#&gt; 2     2   1.014589 0.01397591 72.59557          0      0.0001</span></span>
-<span><span class="co">#&gt; 3     3 0.03139199 0.02002123 1.567936  0.1169595      0.1103</span></span>
-<span><span class="co">#&gt; 4     4 0.03008817 0.01418312 2.121407 0.03393663      0.0608</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_rwolf2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   model     Estimate Std. Error    t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1     1    0.9896609 0.04341633   22.79467  6.356963e-93      0.0001</span></span>
+<span><span class="co">#&gt; 2     2    0.9713667 0.03186495   30.48386 9.523796e-145      0.0001</span></span>
+<span><span class="co">#&gt; 3     3 -0.007682607 0.04403736 -0.1744566      0.861542      0.8567</span></span>
+<span><span class="co">#&gt; 4     4  -0.02689601 0.03130345 -0.8592027     0.3904352      0.6163</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
 </h2>
-<p>The above procedure with <code>S=8</code> hypotheses, <code>N=5000</code> observations and <code>k %in% (1,2)</code> parameters finises in around 3.5 seconds.</p>
+<p>The above procedure with <code>S=8</code> hypotheses, <code>N=1000</code> observations and <code>k %in% (1,2)</code> parameters finises in around 5 seconds.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"microbenchmark"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  </span>
@@ -187,10 +187,11 @@
 <span>    times <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span>
 <span> </span>
-<span> <span class="co"># t: seconds</span></span>
-<span> <span class="co">#           expr      min       lq     mean   median       uq      max neval</span></span>
-<span> <span class="co">#    Romano-Wolf 3.382969 3.382969 3.382969 3.382969 3.382969 3.382969     1</span></span>
-<span>   </span>
+<span><span class="co"># t: seconds</span></span>
+<span><span class="co">#         expr      min       lq     mean   median       uq</span></span>
+<span><span class="co">#  Romano-Wolf 4.834184 4.834184 4.834184 4.834184 4.834184</span></span>
+<span><span class="co">#       max neval</span></span>
+<span><span class="co">#  4.834184     1   </span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -198,10 +199,23 @@
 </h2>
 <p>We test <span class="math inline"><em>S</em> = 6</span> hypotheses and generate data as</p>
 <p><span class="math display"><em>Y</em><sub><em>i</em>, <em>s</em>, <em>g</em></sub> = <em>β</em><sub>0</sub> + <em>β</em><sub>1, <em>s</em></sub><em>D</em><sub><em>i</em></sub> + <em>u</em><sub><em>i</em>, <em>g</em></sub> + <em>ϵ</em><sub><em>i</em>, <em>s</em></sub></span> where <span class="math inline"><em>D</em><sub><em>i</em></sub> = 1(<em>U</em><sub><em>i</em></sub>&gt;0.5)</span> and <span class="math inline"><em>U</em><sub><em>i</em></sub></span> is drawn from a uniform distribution, <span class="math inline"><em>u</em><sub><em>i</em>, <em>g</em></sub></span> is a cluster level shock with intra-cluster correlation <span class="math inline">0.5</span>, and the idiosyncratic error term is drawn from a multivariate random normal distribution with mean <span class="math inline">0<sub><em>S</em></sub></span> and covariance matrix</p>
-<p><code>{r, eval = FALSE} S &lt;- 6 rho &lt;- 0.5 Sigma &lt;- matrix(1, 6, 6) diag(Sigma) &lt;- rho Sigma</code></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
+<span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<span><span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">rho</span>, <span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">Sigma</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">Sigma</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]</span></span>
+<span><span class="co">#&gt; [1,]  1.0  0.5  0.5  0.5  0.5  0.5</span></span>
+<span><span class="co">#&gt; [2,]  0.5  1.0  0.5  0.5  0.5  0.5</span></span>
+<span><span class="co">#&gt; [3,]  0.5  0.5  1.0  0.5  0.5  0.5</span></span>
+<span><span class="co">#&gt; [4,]  0.5  0.5  0.5  1.0  0.5  0.5</span></span>
+<span><span class="co">#&gt; [5,]  0.5  0.5  0.5  0.5  1.0  0.5</span></span>
+<span><span class="co">#&gt; [6,]  0.5  0.5  0.5  0.5  0.5  1.0</span></span></code></pre></div>
+<p>with <span class="math inline"><em>ρ</em> ≥ 0</span>. We assume that <span class="math inline"><em>β</em><sub>1, <em>s</em></sub> = 0</span> for all <span class="math inline"><em>s</em></span>.</p>
 <p>This experiment imposes a data generating process as in equation (9) in <a href="https://docs.iza.org/dp12845.pdf" class="external-link">Clarke, Romano and Wolf</a>, with an additional error term <span class="math inline"><em>u</em><sub><em>g</em></sub></span> for <span class="math inline"><em>G</em> = 20</span> clusters and intra-cluster correlation 0.5 and <span class="math inline"><em>N</em> = 1000</span> observations.</p>
 <p>You can run the simulations via the <code><a href="reference/run_fwer_sim.html">run_fwer_sim()</a></code> function attached in the package.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># note that this will take some time</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_fwer_sim.html">run_fwer_sim</a></span><span class="op">(</span></span>
 <span>  seed <span class="op">=</span> <span class="fl">76</span>,</span>
@@ -212,59 +226,63 @@
 <span>  rho <span class="op">=</span> <span class="fl">0.5</span> <span class="co">#correlation between hypotheses, not intra-cluster!</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Both Holm’s method and <code>wildrwolf</code> control the family wise error rates, at both the 5 and 10% significance level.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span></span>
 <span><span class="co">#&gt;                 reject_5 reject_10 rho</span></span>
-<span><span class="co">#&gt; fit_pvalue         0.259     0.456 0.5</span></span>
-<span><span class="co">#&gt; fit_pvalue_holm    0.043     0.095 0.5</span></span>
-<span><span class="co">#&gt; fit_padjust_rw     0.041     0.093 0.5</span></span></code></pre></div>
-<!-- ## Comparison with Stata's rwolf package  -->
-<!-- ```{r, eval = FALSE} -->
-<!-- library(RStata) -->
-<!-- # initiate RStata -->
-<!-- options("RStata.StataVersion" = 16) -->
-<!-- options("RStata.StataPath" = "\"C:\\Program Files\\Stata16\\StataIC-64\"") -->
-<!-- # save the data set so it can be loaded into STATA -->
-<!-- data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv") -->
-<!-- # estimate with stata via Rstata -->
-<!-- stata_program <- " -->
-<!-- clear  -->
-<!-- set more off -->
-<!-- import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
-<!-- set seed 1 -->
-<!-- rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots -->
-<!-- " -->
-<!-- RStata::stata(stata_program, data.out = TRUE) -->
-<!-- #> .  -->
-<!-- #> . clear  -->
-<!-- #> . set more off -->
-<!-- #> . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
-<!-- #> (7 vars, 10,000 obs) -->
-<!-- #> . set seed 1 -->
-<!-- #> . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont -->
-<!-- #> > rols(x2) reps(1000) nodots -->
-<!-- #> Bootstrap replications (1000). This may take some time. -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> Romano-Wolf step-down adjusted p-values -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> Independent variable:  x1 -->
-<!-- #> Outcome variables:   y1 y2 y3 y4 -->
-<!-- #> Number of resamples: 1000 -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> ------------------------------------------------------------------------------ -->
-<!-- #>    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value -->
-<!-- #> --------------------+--------------------------------------------------------- -->
-<!-- #>                  y1 |    0.0000             0.0010              0.0010 -->
-<!-- #>                  y2 |    0.3769             0.3756              0.4166 -->
-<!-- #>                  y3 |    0.2344             0.2408              0.4166 -->
-<!-- #>                  y4 |    0.0398             0.0410              0.1179 -->
-<!-- #> ------------------------------------------------------------------------------ -->
-<!-- ``` -->
+<span><span class="co">#&gt; fit_pvalue         0.282     0.502 0.5</span></span>
+<span><span class="co">#&gt; fit_pvalue_holm    0.061     0.104 0.5</span></span>
+<span><span class="co">#&gt; fit_padjust_rw     0.059     0.105 0.5</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="comparison-with-statas-rwolf-package">Comparison with Stata’s rwolf package<a class="anchor" aria-label="anchor" href="#comparison-with-statas-rwolf-package"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/lbraglia/RStata" class="external-link">RStata</a></span><span class="op">)</span></span>
+<span><span class="co"># initiate RStata</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataPath"</span> <span class="op">=</span> <span class="st">"\"C:\\Program Files\\Stata17\\StataBE-64\""</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"RStata.StataVersion"</span> <span class="op">=</span> <span class="fl">17</span><span class="op">)</span></span>
+<span><span class="co"># save the data set so it can be loaded into STATA</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu">fwrite</span><span class="op">(</span><span class="va">data</span>, <span class="st">"c:/Users/alexa/Dropbox/rwolf/test.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># estimate with stata via Rstata</span></span>
+<span><span class="va">stata_program</span> <span class="op">&lt;-</span> <span class="st">"</span></span>
+<span><span class="st">clear</span></span>
+<span><span class="st">set more off</span></span>
+<span><span class="st">import delimited c:/Users/alexa/Dropbox/rwolf/test.csv</span></span>
+<span><span class="st">set seed 1</span></span>
+<span><span class="st">rwolf y1 y2 y3 y4, indepvar(x1) controls(x2) reps(9999)</span></span>
+<span><span class="st">"</span></span>
+<span><span class="fu">RStata</span><span class="fu">::</span><span class="fu">stata</span><span class="op">(</span><span class="va">stata_program</span>, data.out <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Romano-Wolf step-down adjusted p-values</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># Independent variable:  x1</span></span>
+<span><span class="co"># Outcome variables:   y1 y2 y3 y4</span></span>
+<span><span class="co"># Number of resamples: 9999</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># ------------------------------------------------------------------------------</span></span>
+<span><span class="co">#    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value</span></span>
+<span><span class="co"># --------------------+---------------------------------------------------------</span></span>
+<span><span class="co">#                  y1 |    0.0000             0.0001              0.0001</span></span>
+<span><span class="co">#                  y2 |    0.3904             0.3755              0.6070</span></span>
+<span><span class="co">#                  y3 |    0.0000             0.0001              0.0001</span></span>
+<span><span class="co">#                  y4 |    0.9586             0.9596              0.9596</span></span>
+<span><span class="co"># ------------------------------------------------------------------------------</span></span></code></pre></div>
+<p>For comparison, <code>wildrwolf</code> produces the following output:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Y1</span>, <span class="va">Y2</span>, <span class="va">Y3</span>, <span class="va">Y4</span><span class="op">)</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> </span>
+<span>                 , data <span class="op">=</span> <span class="va">data</span>, se <span class="op">=</span> <span class="st">"hetero"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span><span class="va">models</span>, param <span class="op">=</span> <span class="st">"X1"</span>, B <span class="op">=</span> <span class="fl">9999</span>, seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%</span></span>
+<span><span class="co">#&gt;   model    Estimate Std. Error    t value      Pr(&gt;|t|) RW Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; 1     1   0.9713667 0.03201663   30.33945 9.318861e-144      0.0001</span></span>
+<span><span class="co">#&gt; 2     2 -0.02689601 0.03050616 -0.8816584     0.3781741      0.6082</span></span>
+<span><span class="co">#&gt; 3     3   0.3925661 0.03096423   12.67805  2.946569e-34      0.0001</span></span>
+<span><span class="co">#&gt; 4     4 0.001657765 0.03337464 0.04967138     0.9603942      0.9600</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
