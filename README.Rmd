@@ -57,16 +57,16 @@ library(fixest)
 
 set.seed(1412)
 
-N <- 5000
+N <- 1000
 X1 <- rnorm(N)
 X2 <- rnorm(N)
 rho <- 0.5
 sigma <- matrix(rho, 4, 4); diag(sigma) <- 1
 u <- MASS::mvrnorm(n = N, mu = rep(0, 4), Sigma = sigma)
 Y1 <- 1 + 1 * X1 + X2 
-Y2 <- 1 + 0.01 * X1 + X2
+Y2 <- 1 + 0.01 * X1 + X2 
 Y3 <- 1 + 0.4 * X1 + X2
-Y4 <- 1 + -0.02 * X1 + X2
+Y4 <- 1 + -0.02 * X1 + X2 
 for(x in 1:4){
   var_char <- paste0("Y", x)
   assign(var_char, get(var_char) + u[,x])
@@ -89,7 +89,7 @@ fit <- feols(c(Y1, Y2, Y3, Y4) ~ csw(X1,X2),
 # clean workspace except for res & data
 rm(list= ls()[!(ls() %in% c('fit','data'))])
 
-res_rwolf <- wildrwolf::rwolf(
+res_rwolf1 <- wildrwolf::rwolf(
   models = fit,
   param = "X1", 
   B = 9999, 
@@ -99,7 +99,7 @@ res_rwolf <- wildrwolf::rwolf(
 pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
 
 # Romano-Wolf Corrected P-values
-summary(res_rwolf)
+summary(res_rwolf1)
 
 # Holm Corrected P-values
 p.adjust(pvals, method = "holm") |> round(4)
@@ -113,17 +113,17 @@ fit2 <- feols(Y1 ~ X1 + X2, data = data)
 fit3 <- feols(Y2 ~ X1, data = data)
 fit4 <- feols(Y2 ~ X1 + X2, data = data)
 
-res_rwolf <- rwolf(
+res_rwolf2 <- rwolf(
   models = list(fit1, fit2, fit3, fit4), 
   param = "X1",  
   B = 9999
 )
-summary(res_rwolf)
+summary(res_rwolf2)
 ```
 
 ## Performance
 
-The above procedure with `S=8` hypotheses, `N=5000` observations and `k %in% (1,2)` parameters finises in around 3.5 seconds.
+The above procedure with `S=8` hypotheses, `N=1000` observations and `k %in% (1,2)` parameters finises in around 5 seconds.
 
 ```{r, warning = FALSE, message = FALSE, eval = FALSE}
 if(requireNamespace("microbenchmark")){
@@ -138,10 +138,11 @@ if(requireNamespace("microbenchmark")){
     times = 1
   )
  
- # t: seconds
- #           expr      min       lq     mean   median       uq      max neval
- #    Romano-Wolf 3.382969 3.382969 3.382969 3.382969 3.382969 3.382969     1
-   
+# t: seconds
+#         expr      min       lq     mean   median       uq
+#  Romano-Wolf 4.834184 4.834184 4.834184 4.834184 4.834184
+#       max neval
+#  4.834184     1   
 }
 ```
 
@@ -188,54 +189,62 @@ res
 ```
 
 
-<!-- ## Comparison with Stata's rwolf package  -->
+## Comparison with Stata's rwolf package
 
-<!-- ```{r, eval = FALSE} -->
-<!-- library(RStata) -->
-<!-- # initiate RStata -->
-<!-- options("RStata.StataVersion" = 16) -->
-<!-- options("RStata.StataPath" = "\"C:\\Program Files\\Stata16\\StataIC-64\"") -->
-<!-- # save the data set so it can be loaded into STATA -->
-<!-- data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv") -->
+```{r, eval = FALSE}
+library(RStata)
+# initiate RStata
+    options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
+    options("RStata.StataVersion" = 17)
+# save the data set so it can be loaded into STATA
+data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
 
-<!-- # estimate with stata via Rstata -->
-<!-- stata_program <- " -->
-<!-- clear  -->
-<!-- set more off -->
-<!-- import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
-<!-- set seed 1 -->
-<!-- rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) controls(x2) reps(1000) nodots -->
-<!-- " -->
-<!-- RStata::stata(stata_program, data.out = TRUE) -->
+# estimate with stata via Rstata
+stata_program <- "
+clear
+set more off
+import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
+set seed 1
+rwolf y1 y2 y3 y4, indepvar(x1) controls(x2) reps(9999)
+"
+RStata::stata(stata_program, data.out = TRUE)
 
-<!-- #> .  -->
-<!-- #> . clear  -->
-<!-- #> . set more off -->
-<!-- #> . import delimited c:/Users/alexa/Dropbox/rwolf/test.csv -->
-<!-- #> (7 vars, 10,000 obs) -->
-<!-- #> . set seed 1 -->
-<!-- #> . rwolf y1 y2 y3 y4, vce(cluster group_id) cluster(group_id)  indepvar(x1) cont -->
-<!-- #> > rols(x2) reps(1000) nodots -->
-<!-- #> Bootstrap replications (1000). This may take some time. -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> Romano-Wolf step-down adjusted p-values -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> Independent variable:  x1 -->
-<!-- #> Outcome variables:   y1 y2 y3 y4 -->
-<!-- #> Number of resamples: 1000 -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #> ------------------------------------------------------------------------------ -->
-<!-- #>    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value -->
-<!-- #> --------------------+--------------------------------------------------------- -->
-<!-- #>                  y1 |    0.0000             0.0010              0.0010 -->
-<!-- #>                  y2 |    0.3769             0.3756              0.4166 -->
-<!-- #>                  y3 |    0.2344             0.2408              0.4166 -->
-<!-- #>                  y4 |    0.0398             0.0410              0.1179 -->
-<!-- #> ------------------------------------------------------------------------------ -->
-<!-- ``` -->
+
+# Romano-Wolf step-down adjusted p-values
+# 
+# 
+# Independent variable:  x1
+# Outcome variables:   y1 y2 y3 y4
+# Number of resamples: 9999
+# 
+# 
+# ------------------------------------------------------------------------------
+#    Outcome Variable | Model p-value    Resample p-value    Romano-Wolf p-value
+# --------------------+---------------------------------------------------------
+#                  y1 |    0.0000             0.0001              0.0001
+#                  y2 |    0.3904             0.3755              0.6070
+#                  y3 |    0.0000             0.0001              0.0001
+#                  y4 |    0.9586             0.9596              0.9596
+# ------------------------------------------------------------------------------
+
+
+```
+
+For comparison,  `wildrwolf` produces the following output:
+
+```{r, warning = FALSE, message = FALSE, eval = FALSE}
+models <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2 
+                 , data = data, se = "hetero")
+```
+
+```{r, include = FALSE}
+models <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2 
+                 , data = data, se = "hetero")
+```
+
+```{r}
+summary(rwolf(models, param = "X1", B = 9999, seed = 123))
+
+```
+
 
