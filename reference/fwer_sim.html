@@ -14,7 +14,7 @@ error rates (FWERs)"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
     
     <a class="navbar-brand me-2" href="../index.html">wildrwolf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ error rates (FWERs)</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fwer_sim</span><span class="op">(</span><span class="va">rho</span>, <span class="va">N</span>, <span class="va">s</span>, <span class="va">B</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fwer_sim</span><span class="op">(</span><span class="va">rho</span>, <span class="va">N</span>, <span class="va">s</span>, <span class="va">B</span>, G <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,8 +69,11 @@ error rates (FWERs)</p>
 
 
 <dt>B</dt>
-<dd><p>The number of bootstrap draws employed in the 'rwolf()' and
-'wyoung()' procedures</p></dd>
+<dd><p>The number of bootstrap draws e</p></dd>
+
+
+<dt>G</dt>
+<dd><p>The number of clusters. If NULL, no clustering.</p></dd>
 
 </dl></div>
     <div class="section level2">

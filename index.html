@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">wildrwolf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,7 +177,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"microbenchmark"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="fu">microbenchmark</span><span class="fu">::</span><span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>  <span class="fu">microbenchmark</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Romano-Wolf"</span> <span class="op">=</span> <span class="fu">wildrwolf</span><span class="fu">::</span><span class="fu"><a href="reference/rwolf.html">rwolf</a></span><span class="op">(</span></span>
 <span>      models <span class="op">=</span> <span class="va">fit</span>,</span>
 <span>      param <span class="op">=</span> <span class="st">"X1"</span>, </span>
@@ -252,7 +252,7 @@
 <span><span class="st">set seed 1</span></span>
 <span><span class="st">rwolf y1 y2 y3 y4, indepvar(x1) controls(x2) reps(9999)</span></span>
 <span><span class="st">"</span></span>
-<span><span class="fu">RStata</span><span class="fu">::</span><span class="fu">stata</span><span class="op">(</span><span class="va">stata_program</span>, data.out <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">RStata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RStata/man/stata.html" class="external-link">stata</a></span><span class="op">(</span><span class="va">stata_program</span>, data.out <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># Romano-Wolf step-down adjusted p-values</span></span>
