@@ -197,13 +197,13 @@ library(RStata)
     options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
     options("RStata.StataVersion" = 17)
 # save the data set so it can be loaded into STATA
-write.csv(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
+write.csv(data, "c:/Users/alexa/Dropbox/rwolf/inst/data/readme.csv")
 
 # estimate with stata via Rstata
 stata_program <- "
 clear
 set more off
-import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
+import delimited c:/Users/alexa/Dropbox/rwolf/inst/data/readme.csv
 set seed 1
 rwolf y1 y2 y3 y4, indepvar(x1) controls(x2) reps(9999)
 "

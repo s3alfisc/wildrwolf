@@ -39,7 +39,7 @@ test_that("test wildrwolf against Stata's rwolf", {
                se = "hetero",
                ssc = ssc(cluster.adj = TRUE))
 
-  write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/tests/data.csv")
+  write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/inst/data/data.csv")
 
   fit_padjust <- rwolf(fit, param = ~X1, B = 9999)
 

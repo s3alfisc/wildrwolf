@@ -40,5 +40,6 @@ vignettes/*.pdf
 docs
 
 # any csv files created in tests and examples
-data/*.csv
+inst/data/*.csv
+
  
