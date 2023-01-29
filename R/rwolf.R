@@ -189,43 +189,8 @@ rwolf <- function(
   # after calculating all bootstrap t statistics, initiate the RW procedure
 
   # stepwise p-value calculation
-  # note: this part very closely follows the p_adjust function from the hdm
-  # package, written and maintained by Martin Spindler
-  # code at https://github.com/cran/hdm/blob/master/R/p_adjust.R
-  
-  pinit <- corr.padj <- pval <- vector(mode = "numeric", length = S)
-  stepdown.index <- order(t_stats, decreasing = TRUE)
-  ro <- order(stepdown.index)
-  
-  for(s in 1:S){
-    if(s == 1){
-      max_stat <- apply(boot_t_stats, 1, max)
-      pinit[s] <- pmin(1, 
-                       (sum(max_stat >= abs(t_stats[stepdown.index[s]])) + 1) / (B + 1) 
-      )
-    }
-    if(s > 1){
-      boot_t_stat_udp <- boot_t_stats[, -stepdown.index[1:(s-1)], drop = FALSE]     # drop max statistic
-      max_stat <- apply(boot_t_stat_udp, 1, max)                                    # for each B, calculate max S
-      pinit[s] <- pmin(1, 
-                       (sum(max_stat >= abs(t_stats[stepdown.index[s]])) + 1)
-                       / (B + 1)
-      )
-    }
-  }
-  
-  for(j in 1:S){
-    if(j == 1){
-      corr.padj[j] <- pinit[j]
-    }
-    if(j > 1){
-      corr.padj[j] <- max(pinit[j], corr.padj[j - 1])
-    }
-  }
-  
-  # collect the results
-  pval <- corr.padj[ro]
-  
+  pval <- get_rwolf_pval(t_stats = t_stats, 
+                          boot_t_stats= boot_t_stats)
   
   # summarize all results
   models_info <-
