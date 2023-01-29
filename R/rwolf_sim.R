@@ -22,6 +22,8 @@ fwer_sim <- function(rho, N, s, B, G = 20){
   dreamerr::check_arg(B, "integer scalar")
   dreamerr::check_arg(s, "integer scalar")
   dreamerr::check_arg(rho, "numeric scalar")
+  dreamerr::check_arg(G, "integer scalar")
+  
 
   if(s %% 2 != 0){
     stop("s needs to be divisible by 2.")
