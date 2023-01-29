@@ -126,20 +126,18 @@ run_fwer_sim <- function(
     N = 1000,
     s = 6, 
     G = 20){
-
+  #' 
   #' Run a MC simulation study on family-wise error rates (FWERs)
-  #' for the Holm, Westfall & Young and Romano & Wolf Methods multiple
-  #' hypothesis adjustment methods
+  #' for the Holm and Romano & Wolf Methods multiple
+  #' hypothesis adjustment methods given true null effects
   #'
-  #' In general, this is a wrapper around `fwer_sim()`. See `?fwer_sim()`
-  #' for more information
-  #'
-  #' @param n_sims The number of Monte Carlo iterations. 1000 by default.
-  #' @param rho The correlation between the outcome variables.
+  #' @param n_sims The number of Monte Carlo iterations. 100 by default.
+  #' @param rho The correlation between the outcome variables. Vectorized 
+  #'        c(0, 0.25, 0.5, .75) by default
   #' @param seed A random seed.
-  #' @param N The number of observations
-  #' @param s The number of dependent variables
-  #' @param B The number of bootstrap draws
+  #' @param N The number of observations. 1000 by default.
+  #' @param s The number of dependent variables. 6 by default.
+  #' @param B The number of bootstrap draws. 499 by default.
   #' @param G The number of clusters. If NULL, no clustering. 20 by default
   #'
   #' @export

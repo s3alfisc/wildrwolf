@@ -10,7 +10,7 @@
 #'        H0: param = r vs H1: param != r  
 #' @param B The number of bootstrap iterations
 #' @param p_val_type Character vector of length 1. Type of hypothesis test 
-#'        By default "two-tailed". Other options include "equal-tailed", ">" and "<". 
+#'        By default "two-tailed". Other options include "equal-tailed", ">" (for one-sided tests) and "<" (for two-sided tests). 
 #' @param weights_type character or function. The character string specifies the type
 #'                     of boostrap to use: One of "rademacher", "mammen", "norm"
 #'                     and "webb". Alternatively, type can be a function(n) for drawing 
@@ -18,10 +18,14 @@
 #'                     For the Rademacher distribution, if the number of replications B exceeds 
 #'                     the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
 #'                     will use each possible combination once (enumeration). 
-#' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11".              
+#' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11". "fnw11" by default.           
 #' @param seed Integer. Sets the random seed. NULL by default. 
-#' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.
-#' @param nthreads Integer. The number of threads to use. 
+#' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R 
+#'        implementation or via WildBootTests.jl? 'R' by default. 
+#'        The other option is 'WildBootTests.jl'. Running the bootstrap through 
+#'        WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
+#'        for complex problems (e.g. problems with more than 500 clusters).
+#' @param nthreads Integer. The number of threads to use when running the bootstrap.
 #' @param ... additional function values passed to the bootstrap function. 
 #' 
 #' @importFrom fwildclusterboot boottest
@@ -32,6 +36,7 @@
 #' @export
 #' 
 #' @return 
+#' 
 #' An object of type `rwolf`
 #' 
 #' @examples
@@ -77,7 +82,7 @@ rwolf <- function(
     seed = NULL, 
     engine = "R",
     nthreads = 1,
-    bootstrap_type = NULL,
+    bootstrap_type = "fnw11",
   ...){
   
 

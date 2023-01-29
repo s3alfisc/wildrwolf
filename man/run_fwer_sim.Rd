@@ -3,8 +3,8 @@
 \name{run_fwer_sim}
 \alias{run_fwer_sim}
 \title{Run a MC simulation study on family-wise error rates (FWERs)
-for the Holm, Westfall & Young and Romano & Wolf Methods multiple
-hypothesis adjustment methods}
+for the Holm and Romano & Wolf Methods multiple
+hypothesis adjustment methods given true null effects}
 \usage{
 run_fwer_sim(
   n_sims = 100,
@@ -17,23 +17,25 @@ run_fwer_sim(
 )
 }
 \arguments{
-\item{n_sims}{The number of Monte Carlo iterations. 1000 by default.}
+\item{n_sims}{The number of Monte Carlo iterations. 100 by default.}
 
-\item{rho}{The correlation between the outcome variables.}
+\item{rho}{The correlation between the outcome variables. Vectorized 
+c(0, 0.25, 0.5, .75) by default}
 
 \item{seed}{A random seed.}
 
-\item{B}{The number of bootstrap draws}
+\item{B}{The number of bootstrap draws. 499 by default.}
 
-\item{N}{The number of observations}
+\item{N}{The number of observations. 1000 by default.}
 
-\item{s}{The number of dependent variables}
+\item{s}{The number of dependent variables. 6 by default.}
 
 \item{G}{The number of clusters. If NULL, no clustering. 20 by default}
 }
 \description{
-In general, this is a wrapper around `fwer_sim()`. See `?fwer_sim()`
-for more information
+Run a MC simulation study on family-wise error rates (FWERs)
+for the Holm and Romano & Wolf Methods multiple
+hypothesis adjustment methods given true null effects
 }
 \examples{
 \dontrun{

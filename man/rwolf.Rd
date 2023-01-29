@@ -15,7 +15,7 @@ rwolf(
   seed = NULL,
   engine = "R",
   nthreads = 1,
-  bootstrap_type = NULL,
+  bootstrap_type = "fnw11",
   ...
 )
 }
@@ -32,7 +32,7 @@ rwolf(
 H0: param = r vs H1: param != r}
 
 \item{p_val_type}{Character vector of length 1. Type of hypothesis test 
-By default "two-tailed". Other options include "equal-tailed", ">" and "<".}
+By default "two-tailed". Other options include "equal-tailed", ">" (for one-sided tests) and "<" (for two-sided tests).}
 
 \item{weights_type}{character or function. The character string specifies the type
 of boostrap to use: One of "rademacher", "mammen", "norm"
@@ -44,11 +44,15 @@ will use each possible combination once (enumeration).}
 
 \item{seed}{Integer. Sets the random seed. NULL by default.}
 
-\item{engine}{Should the wild cluster bootstrap run via fwildclusterboot's R implementation or via WildBootTests.jl? 'R' by default. The other option is 'WildBootTests.jl'.}
+\item{engine}{Should the wild cluster bootstrap run via fwildclusterboot's R 
+implementation or via WildBootTests.jl? 'R' by default. 
+The other option is 'WildBootTests.jl'. Running the bootstrap through 
+WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
+for complex problems (e.g. problems with more than 500 clusters).}
 
-\item{nthreads}{Integer. The number of threads to use.}
+\item{nthreads}{Integer. The number of threads to use when running the bootstrap.}
 
-\item{bootstrap_type}{Either "11", "13", "31", "33", or "fnw11".}
+\item{bootstrap_type}{Either "11", "13", "31", "33", or "fnw11". "fnw11" by default.}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
