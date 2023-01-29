@@ -197,7 +197,7 @@ library(RStata)
     options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
     options("RStata.StataVersion" = 17)
 # save the data set so it can be loaded into STATA
-data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
+write.csv(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
 
 # estimate with stata via Rstata
 stata_program <- "
