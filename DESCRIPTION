@@ -1,7 +1,8 @@
 Package: wildrwolf
 Type: Package
 Title: Romano-Wolf corrected p-values for objects of type fixest and fixest_multi
-Version: 0.3.1
+       via a wild bootstrap
+Version: 0.3.2
 Author: Alexander Fischer
 Maintainer: Alexander Fischer <alexander-fischer1801@t-online.de>
 Description: Implements Romano-Wolf corrected p-values for objects of type fixest and fixest_multi via a wild (cluster) bootstrap.
@@ -16,6 +17,7 @@ Imports:
   fabricatr, 
   MASS
 URL: https://s3alfisc.github.io/wildrwolf/
+BugReports: https://github.com/s3alfisc/wildrwolf/issues/
 Suggests: 
     covr,
     testthat (>= 3.0.0),
