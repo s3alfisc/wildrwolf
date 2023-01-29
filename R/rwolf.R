@@ -236,10 +236,8 @@ rwolf <- function(
   models_info <- Reduce(rbind, models_info)
   
   # some reordering
-  # models_info <- models_info[, c(7, 5, 6, 1:4)]
   models_info <- models_info[, c(7, 1:4)]
   models_info <- as.data.frame(models_info)
-  # attributes(models_info)$row.names <- NULL 
   rownames(models_info) <- NULL
   models_info[, "RW Pr(>|t|)"] <- pval
 
