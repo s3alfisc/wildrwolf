@@ -48,7 +48,7 @@ test_that("test wildrwolf against Stata's rwolf", {
 
   if(run_stata){
     # write file to disk
-    write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/inst/data/data.csv")
+    write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/inst/extdata/data.csv")
     
     library(RStata)
     options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
