@@ -38,3 +38,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 docs
+
+# any csv files created in tests and examples
+data/*.csv
+ 
