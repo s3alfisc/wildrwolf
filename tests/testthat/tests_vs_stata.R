@@ -1,8 +1,10 @@
 test_that("test wildrwolf against Stata's rwolf", {
 
-  # skip_on_ci()
-  # skip_on_cran()
-
+  # set to TRUE if you want to run the actual stata 
+  # commands via RStata
+  run_stata <- FALSE
+  
+  
   ## create data + run rwolf in R
   library(MASS)
   library(fixest)
@@ -39,15 +41,15 @@ test_that("test wildrwolf against Stata's rwolf", {
                se = "hetero",
                ssc = ssc(cluster.adj = TRUE))
 
-  write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/inst/data/data.csv")
-
   fit_padjust <- rwolf(fit, param = ~X1, B = 9999)
 
 
   ## run everything via rwolf.ado
 
-  run_stata <- FALSE
   if(run_stata){
+    # write file to disk
+    write.csv(data, file = "C:/Users/alexa/Dropbox/wildrwolf/inst/data/data.csv")
+    
     library(RStata)
     options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
     options("RStata.StataVersion" = 17)
