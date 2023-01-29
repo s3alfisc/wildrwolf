@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wildrwolf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,13 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/s3alfisc/wildrwolf/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -56,11 +62,17 @@
 error rates (FWERs)</dd>
       </dl><dl><dt>
           
+          <code><a href="get_rwolf_pval.html">get_rwolf_pval()</a></code> 
+        </dt>
+        <dd>compute Romano-Wolf adjusted p-values based 
+on bootstrapped t-statistics</dd>
+      </dl><dl><dt>
+          
           <code><a href="run_fwer_sim.html">run_fwer_sim()</a></code> 
         </dt>
         <dd>Run a MC simulation study on family-wise error rates (FWERs)
-for the Holm, Westfall &amp; Young and Romano &amp; Wolf Methods multiple
-hypothesis adjustment methods</dd>
+for the Holm and Romano &amp; Wolf Methods multiple
+hypothesis adjustment methods given true null effects</dd>
       </dl><dl><dt>
           
           <code><a href="rwolf.html">rwolf()</a></code> 
