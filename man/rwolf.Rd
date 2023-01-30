@@ -20,27 +20,31 @@ rwolf(
 )
 }
 \arguments{
-\item{models}{An object of type fixest_multi or a list of objects of type fixest}
+\item{models}{An object of type fixest_multi or a list of objects of 
+type fixest}
 
 \item{param}{The regression parameter to be tested}
 
 \item{B}{The number of bootstrap iterations}
 
-\item{R}{Hypothesis Vector giving linear combinations of coefficients. Must be either NULL or a vector of the same length as `param`. If NULL, a vector of ones of length param.}
+\item{R}{Hypothesis Vector giving linear combinations of coefficients.
+Must be either NULL or a vector of the same length as `param`. 
+If NULL, a vector of ones of length param.}
 
 \item{r}{A numeric. Shifts the null hypothesis 
 H0: param = r vs H1: param != r}
 
 \item{p_val_type}{Character vector of length 1. Type of hypothesis test 
-By default "two-tailed". Other options include "equal-tailed", ">" (for one-sided tests) and "<" (for two-sided tests).}
+By default "two-tailed". Other options include "equal-tailed", ">"
+ (for one-sided tests) and "<" (for two-sided tests).}
 
-\item{weights_type}{character or function. The character string specifies the type
-of boostrap to use: One of "rademacher", "mammen", "norm"
+\item{weights_type}{character or function. The character string specifies 
+the type of bootstrap to use: One of "rademacher", "mammen", "norm"
 and "webb". Alternatively, type can be a function(n) for drawing 
-wild bootstrap factors. "rademacher" by default.  
-For the Rademacher distribution, if the number of replications B exceeds 
-the number of possible draw ombinations, 2^(#number of clusters), then `boottest()` 
-will use each possible combination once (enumeration).}
+wild bootstrap factors. "rademacher" by default.  For the Rademacher 
+distribution, if the number of replications B exceeds the number of possible
+draw ombinations, 2^(#number of clusters), then `boottest()` will use each 
+possible combination once (enumeration).}
 
 \item{seed}{Integer. Sets the random seed. NULL by default.}
 
@@ -50,9 +54,11 @@ The other option is 'WildBootTests.jl'. Running the bootstrap through
 WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
 for complex problems (e.g. problems with more than 500 clusters).}
 
-\item{nthreads}{Integer. The number of threads to use when running the bootstrap.}
+\item{nthreads}{Integer. The number of threads to use when running the 
+bootstrap.}
 
-\item{bootstrap_type}{Either "11", "13", "31", "33", or "fnw11". "fnw11" by default.}
+\item{bootstrap_type}{Either "11", "13", "31", "33", or "fnw11". 
+"fnw11" by default. See `?fwildclusterboot::boottest` for more details}
 
 \item{...}{additional function values passed to the bootstrap function.}
 }
@@ -60,8 +66,11 @@ for complex problems (e.g. problems with more than 500 clusters).}
 An object of type `rwolf`
 }
 \description{
-Function implements the Romano-Wolf multiple hypthesis correction procedure for objects of type fixest_multi (fixest_multi are objects created by `fixest::feols()` that use `feols()` multiple-estimation interface). 
-Currently, the command is restricted to two-sided hypotheses and oneway clustered standard errors. For the wild cluster bootstrap, 
+Function implements the Romano-Wolf multiple hypothesis correction procedure
+for objects of type fixest_multi (fixest_multi are objects created by 
+`fixest::feols()` that use `feols()` multiple-estimation interface). 
+Currently, the command is restricted to two-sided hypotheses and one-way 
+clustered standard errors. For the wild cluster bootstrap, 
 the null is always imposed.
 }
 \examples{
@@ -95,5 +104,6 @@ summary(res_rwolf)
 
 }
 \references{
-Clarke, Romano & Wolf (2019), STATA Journal. IZA working paper: https://ftp.iza.org/dp12845.pdf
+Clarke, Romano & Wolf (2019), STATA Journal. 
+IZA working paper: https://ftp.iza.org/dp12845.pdf
 }

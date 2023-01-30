@@ -5,14 +5,13 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/s3alfisc/rwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/rwolf/actions)
+[![R-CMD-check](https://github.com/s3alfisc/wildrwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions)
+[![pkgcheck](https://github.com/s3alfisc/wildrwolf/workflows/pkgcheck/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions?query=workflow%3Apkgcheck)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
-
 [![Codecov test
-coverage](https://codecov.io/gh/s3alfisc/rwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/rwolf?branch=main)
-[![R-CMD-check](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml)
+coverage](https://codecov.io/gh/s3alfisc/wildrwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/wildrwolf?branch=main)
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf
@@ -26,14 +25,11 @@ Because the bootstrap-resampling is based on the
 package, `wildrwolf` is usually really fast.
 
 The package is complementary to
-[wildwyoung](https://github.com/s3alfisc/wildwyoung), which implements
-the multiple hypothesis adjustment method following Westfall and Young
-(1993).
+[wildwyoung](https://github.com/s3alfisc/wildwyoung) (still work in
+progress), which implements the multiple hypothesis adjustment method
+following Westfall and Young (1993).
 
 Adding support for multi-way clustering is work in progress.
-
-I hope to submit `wildrwolf` to CRAN by the end of the summer - if you
-would like to help me get there, please send me an email 😄
 
 ## Installation
 
@@ -147,7 +143,7 @@ summary(res_rwolf2)
 ## Performance
 
 The above procedure with `S=8` hypotheses, `N=1000` observations and
-`k %in% (1,2)` parameters finises in around 5 seconds.
+`k %in% (1,2)` parameters finishes in around 5 seconds.
 
 ``` r
 if(requireNamespace("microbenchmark")){
@@ -237,13 +233,13 @@ library(RStata)
     options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataBE-64\"")
     options("RStata.StataVersion" = 17)
 # save the data set so it can be loaded into STATA
-data.table::fwrite(data, "c:/Users/alexa/Dropbox/rwolf/test.csv")
+write.csv(data, "c:/Users/alexa/Dropbox/rwolf/inst/extdata/readme.csv")
 
 # estimate with stata via Rstata
 stata_program <- "
 clear
 set more off
-import delimited c:/Users/alexa/Dropbox/rwolf/test.csv
+import delimited c:/Users/alexa/Dropbox/rwolf/inst/data/readme.csv
 set seed 1
 rwolf y1 y2 y3 y4, indepvar(x1) controls(x2) reps(9999)
 "

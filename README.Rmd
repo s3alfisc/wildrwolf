@@ -18,22 +18,19 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/s3alfisc/wildrwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions)
+[![pkgcheck](https://github.com/s3alfisc/wildrwolf/workflows/pkgcheck/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions?query=workflow%3Apkgcheck)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
-
 [![Codecov test coverage](https://codecov.io/gh/s3alfisc/wildrwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/wildrwolf?branch=main)
-[![R-CMD-check](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The `wildrwolf` package implements Romano-Wolf multiple-hypothesis-adjusted p-values for objects of type `fixest` and `fixest_multi` from the `fixest` package via a wild cluster bootstrap. At its current stage, the package is experimental and it is not thoroughly tested.
 
 Because the bootstrap-resampling is based on the [fwildclusterboot](https://github.com/s3alfisc/fwildclusterboot) package, `wildrwolf` is usually really fast. 
 
-The package is complementary to [wildwyoung](https://github.com/s3alfisc/wildwyoung), which implements the multiple hypothesis adjustment method following Westfall and Young (1993).
+The package is complementary to [wildwyoung](https://github.com/s3alfisc/wildwyoung) (still work in progress), which implements the multiple hypothesis adjustment method following Westfall and Young (1993).
 
 Adding support for multi-way clustering is work in progress.
-
-I hope to submit `wildrwolf` to CRAN by the end of the summer - if you would like to help me get there, please send me an email `r emo::ji("smile")` 
 
 ## Installation
 
@@ -123,7 +120,7 @@ summary(res_rwolf2)
 
 ## Performance
 
-The above procedure with `S=8` hypotheses, `N=1000` observations and `k %in% (1,2)` parameters finises in around 5 seconds.
+The above procedure with `S=8` hypotheses, `N=1000` observations and `k %in% (1,2)` parameters finishes in around 5 seconds.
 
 ```{r, warning = FALSE, message = FALSE, eval = FALSE}
 if(requireNamespace("microbenchmark")){
