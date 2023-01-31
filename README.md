@@ -16,9 +16,7 @@ coverage](https://codecov.io/gh/s3alfisc/wildrwolf/branch/main/graph/badge.svg)]
 
 The `wildrwolf` package implements Romano-Wolf
 multiple-hypothesis-adjusted p-values for objects of type `fixest` and
-`fixest_multi` from the `fixest` package via a wild cluster bootstrap.
-At its current stage, the package is experimental and it is not
-thoroughly tested.
+`fixest_multi` from the `fixest` package via a wild (cluster) bootstrap.
 
 Because the bootstrap-resampling is based on the
 [fwildclusterboot](https://github.com/s3alfisc/fwildclusterboot)
