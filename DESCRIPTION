@@ -2,7 +2,7 @@ Package: wildrwolf
 Type: Package
 Title: Fast Computation of Romano-Wolf Corrected p-Values for
        Linear Regression Models
-Version: 0.3.3
+Version: 0.4
 Author: Alexander Fischer
 Maintainer: Alexander Fischer <alexander-fischer1801@t-online.de>
 Description: Fast Routines to Compute Romano-Wolf corrected p-Values for 
