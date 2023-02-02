@@ -12,3 +12,4 @@
 ^\.data
 
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
