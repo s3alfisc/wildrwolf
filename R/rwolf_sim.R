@@ -168,7 +168,6 @@ run_fwer_sim <- function(
     
     all_rho_i <- list()
     for(i in 1:n_sims){
-      cat("n_sims: ", i, "\n")
       all_rho_i[[i]] <- fwer_sim(rho = rho[x], B = B, N = N, s = s, G = G)
     }
     all_rho[[x]] <- all_rho_i
