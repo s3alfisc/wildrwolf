@@ -13,7 +13,7 @@ Authors@R:
 Maintainer: Alexander Fischer <alexander-fischer1801@t-online.de>
 Description: Fast Routines to Compute Romano-Wolf corrected p-Values 
              (Romano and Wolf (2005a) <DOI:10.1198/016214504000000539>, 
-             Romano and Wolf (2005b) <DOI:/10.1111/j.1468-0262.2005.00615.x>) 
+             Romano and Wolf (2005b) <DOI:10.1111/j.1468-0262.2005.00615.x>) 
              for objects of type "fixest" and "fixest_multi" from the "fixest" 
              package via a wild (cluster) bootstrap.
 License: GPL (>= 3)
