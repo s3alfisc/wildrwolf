@@ -23,7 +23,7 @@ fwer_sim <- function(rho, N, s, B, G = 20){
   dreamerr::check_arg(B, "integer scalar")
   dreamerr::check_arg(s, "integer scalar")
   dreamerr::check_arg(rho, "numeric scalar")
-  dreamerr::check_arg(G, "integer scalar")
+  dreamerr::check_arg(G, "integer scalar | NULL")
   
 
   if(s %% 2 != 0){

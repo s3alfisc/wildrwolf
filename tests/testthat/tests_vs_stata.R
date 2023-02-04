@@ -64,7 +64,7 @@ test_that("test wildrwolf against Stata's rwolf", {
 
   expect_equal(
     stata_res,
-    fit_padjust$pval,
+    fit_padjust$`RW Pr(>|t|)`,
     tolerance = 1e-01
   )
 
