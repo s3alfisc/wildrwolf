@@ -63,7 +63,13 @@ bootstrap.}
 \item{...}{additional function values passed to the bootstrap function.}
 }
 \value{
-An object of type `rwolf`
+A data.frame containing the following columns: 
+\item{model}{Index of Models}
+\item{Estimate}{The estimated coefficient of `param` in the respective model.}
+\item{Std. Error}{The estimated standard error of `param` in the respective model.}
+\item{t value}{The t statistic of `param` in the respective model.}
+\item{Pr(>|t|)}{The uncorrected pvalue for `param` in the respective model.}
+\item{RW Pr(>|t|)}{The Romano-Wolf corrected pvalue of hypothesis test for `param` in the respective model.}
 }
 \description{
 Function implements the Romano-Wolf multiple hypothesis correction procedure
@@ -100,7 +106,7 @@ data <- data.frame(Y1 = Y1,
 
 res <- feols(c(Y1, Y2, Y3) ~ X1, data = data, cluster = ~ cluster)
 res_rwolf <- rwolf(models = res, param = "X1", B = B)
-summary(res_rwolf)
+res_rwolf
 
 }
 \references{

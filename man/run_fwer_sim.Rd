@@ -2,9 +2,7 @@
 % Please edit documentation in R/rwolf_sim.R
 \name{run_fwer_sim}
 \alias{run_fwer_sim}
-\title{Run a MC simulation study on family-wise error rates (FWERs)
-for the Holm and Romano & Wolf Methods multiple
-hypothesis adjustment methods given true null effects}
+\title{Family Wise Error Rate Simulations}
 \usage{
 run_fwer_sim(
   n_sims = 100,
@@ -32,6 +30,15 @@ c(0, 0.25, 0.5, .75) by default}
 
 \item{G}{The number of clusters. If NULL, no clustering. 20 by default}
 }
+\value{
+A data frame containing familiy wise rejection rates for uncorrected 
+pvalues and corrected pvalues using Holm's and the Romano-Wolf method.
+
+\item{reject_5}{The family wise rejection rate at a 5\%  level}
+\item{reject_10}{The family wise rejection rate at a 10\%  level}
+\item{rho}{The correlation between the outcome variables. See function
+ argument`rho` for more information.}
+}
 \description{
 Run a MC simulation study on family-wise error rates (FWERs)
 for the Holm and Romano & Wolf Methods multiple
@@ -48,6 +55,11 @@ res <- run_fwer_sim(
   s = 10
 )
 res
+
+# >                 reject_5 reject_10 rho
+# > fit_pvalue         0.282     0.502 0.5
+# > fit_pvalue_holm    0.061     0.104 0.5
+# > fit_padjust_rw     0.059     0.105 0.5
 
 }
 }

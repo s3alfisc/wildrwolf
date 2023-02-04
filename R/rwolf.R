@@ -46,7 +46,13 @@
 #' 
 #' @return 
 #' 
-#' An object of type `rwolf`
+#' A data.frame containing the following columns: 
+#' \item{model}{Index of Models}
+#' \item{Estimate}{The estimated coefficient of `param` in the respective model.}
+#' \item{Std. Error}{The estimated standard error of `param` in the respective model.}
+#' \item{t value}{The t statistic of `param` in the respective model.}
+#' \item{Pr(>|t|)}{The uncorrected pvalue for `param` in the respective model.}
+#' \item{RW Pr(>|t|)}{The Romano-Wolf corrected pvalue of hypothesis test for `param` in the respective model.}
 #' 
 #' @examples
 #'  
@@ -75,7 +81,7 @@
 #' 
 #' res <- feols(c(Y1, Y2, Y3) ~ X1, data = data, cluster = ~ cluster)
 #' res_rwolf <- rwolf(models = res, param = "X1", B = B)
-#' summary(res_rwolf)
+#' res_rwolf
 #' 
 #' @references 
 #' Clarke, Romano & Wolf (2019), STATA Journal. 
@@ -149,6 +155,7 @@ rwolf <- function(
   # absolute value for t-stats
   t_stats <- abs(
     unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  
   # repeat line: for multiway clustering, it is not clear how many bootstrap 
   # test statistics will be invalied - for oneway, 
   # all vectors of length(boot_coefs) \leq B
@@ -239,33 +246,6 @@ rwolf <- function(
   rownames(models_info) <- NULL
   models_info[, "RW Pr(>|t|)"] <- pval
 
-  res <- list(
-    call = call,
-    models_info = models_info,
-    coefs = coefs,
-    t_stats = t_stats,
-    boot_coefs = boot_coefs,
-    boot_ses = boot_ses,
-    boot_t_stats = boot_t_stats,
-    pval = pval
-  )
-  
-  # create class of type rwolf
-  class(res) <- "rwolf"
-  
-  invisible(res)
-  
+  models_info
   
 }
-
-summary.rwolf <- function(object, digits, ...){
-  #' Summary method for objects of type rwolf
-  #' @param object An object of type rwolf
-  #' @param digits Rounding of digits
-  #' @param ... misc. function arguments
-  #' @export
-  as.data.frame(object$models_info)
-}
-
-
-
