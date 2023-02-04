@@ -15,7 +15,8 @@ fwer_sim <- function(rho, N, s, B, G = 20){
   #' 
   #' @return
   #' A 'data.frame' containing unadjusted p-values & p-values adjusted using the
-  #' methods by Holm and Romano & Wolf (2005)
+  #' methods by Holm and Romano & Wolf (2005), with the following columns
+  #' 
 
 
   dreamerr::check_arg(N, "integer scalar")
@@ -98,7 +99,9 @@ fwer_sim <- function(rho, N, s, B, G = 20){
       B = B,
       nthreads = 1,
       bootstrap_type = "11"
-    )$pval
+    )
+    
+    fit_padjust_rw <- fit_padjust_rw[, "RW Pr(>|t|)"]
     
     # fit_padjust_wy <- wildwyoung::wyoung(
     #   fit,
@@ -130,6 +133,8 @@ run_fwer_sim <- function(
     s = 6, 
     G = 20){
   #' 
+  #' Family Wise Error Rate Simulations
+  #' 
   #' Run a MC simulation study on family-wise error rates (FWERs)
   #' for the Holm and Romano & Wolf Methods multiple
   #' hypothesis adjustment methods given true null effects
@@ -145,9 +150,17 @@ run_fwer_sim <- function(
   #'
   #' @export
   #'
-  #'
+  #' @return 
+  #' A data frame containing familiy wise rejection rates for uncorrected 
+  #' pvalues and corrected pvalues using Holm's and the Romano-Wolf method.
+  #' 
+  #' \item{reject_5}{The family wise rejection rate at a 5\%  level}
+  #' \item{reject_10}{The family wise rejection rate at a 10\%  level}
+  #' \item{rho}{The correlation between the outcome variables. See function
+  #'  argument`rho` for more information.}
+  #'  
   #' @examples
-  #' \dontrun{
+  #' \donttest{
   #'
   #' res <- run_fwer_sim(
   #'   seed = 123,
@@ -157,6 +170,11 @@ run_fwer_sim <- function(
   #'   s = 10
   #' )
   #' res
+  #' 
+  #' # >                 reject_5 reject_10 rho
+  #' # > fit_pvalue         0.282     0.502 0.5
+  #' # > fit_pvalue_holm    0.061     0.104 0.5
+  #' # > fit_padjust_rw     0.059     0.105 0.5
   #'
   #' }
 

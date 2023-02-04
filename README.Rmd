@@ -96,10 +96,8 @@ res_rwolf1 <- wildrwolf::rwolf(
 pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
 
 # Romano-Wolf Corrected P-values
-summary(res_rwolf1)
+res_rwolf1
 
-# Holm Corrected P-values
-p.adjust(pvals, method = "holm") |> round(4)
 ```
 
 ## Example II
@@ -115,14 +113,14 @@ res_rwolf2 <- rwolf(
   param = "X1",  
   B = 9999
 )
-summary(res_rwolf2)
+res_rwolf2
 ```
 
 ## Performance
 
 The above procedure with `S=8` hypotheses, `N=1000` observations and `k %in% (1,2)` parameters finishes in around 5 seconds.
 
-```{r, warning = FALSE, message = FALSE, eval = FALSE}
+```{r, warning = FALSE, message = FALSE}
 if(requireNamespace("microbenchmark")){
   
   microbenchmark::microbenchmark(
@@ -135,11 +133,6 @@ if(requireNamespace("microbenchmark")){
     times = 1
   )
  
-# t: seconds
-#         expr      min       lq     mean   median       uq
-#  Romano-Wolf 4.834184 4.834184 4.834184 4.834184 4.834184
-#       max neval
-#  4.834184     1   
 }
 ```
 
@@ -240,7 +233,7 @@ models <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2
 ```
 
 ```{r}
-summary(rwolf(models, param = "X1", B = 9999, seed = 123))
+rwolf(models, param = "X1", B = 9999, seed = 123)
 
 ```
 

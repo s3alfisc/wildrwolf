@@ -20,7 +20,7 @@ fwer_sim(rho, N, s, B, G = 20)
 }
 \value{
 A 'data.frame' containing unadjusted p-values & p-values adjusted using the
-methods by Holm and Romano & Wolf (2005)
+methods by Holm and Romano & Wolf (2005), with the following columns
 }
 \description{
 Simulate data as in Clarke, Romano & Wolf (2019) to simulate family wise
