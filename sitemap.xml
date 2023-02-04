@@ -4,9 +4,6 @@
     <loc>https://s3alfisc.github.io/wildrwolf/404.html</loc>
   </url>
   <url>
-    <loc>https://s3alfisc.github.io/wildrwolf/CONTRIBUTING.html</loc>
-  </url>
-  <url>
     <loc>https://s3alfisc.github.io/wildrwolf/LICENSE.html</loc>
   </url>
   <url>
@@ -32,8 +29,5 @@
   </url>
   <url>
     <loc>https://s3alfisc.github.io/wildrwolf/reference/rwolf.html</loc>
-  </url>
-  <url>
-    <loc>https://s3alfisc.github.io/wildrwolf/reference/summary.rwolf.html</loc>
   </url>
 </urlset>
