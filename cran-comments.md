@@ -8,6 +8,14 @@ I was asked to fix the following issues:
 - I have added links to methods papers in the description 
 - I have not switched \dontrun to \donttest, as the example is a 'big' simulation that runs for a very long time (rather one hour than one minute). 
 
+I have checked the package on 
+- github actions (windows, mac, ubuntu)
+- rhub
+- win-devel
+
+All tests produces no errors and warnings, but the following two notes: the usual detrius comment + complaint about misspelled fixest (false positive).
+
+
 Attached are the comments I received: 
 
 Please rather use the Authors@R field and declare Maintainer, Authors
