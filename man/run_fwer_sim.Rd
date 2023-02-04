@@ -45,7 +45,7 @@ for the Holm and Romano & Wolf Methods multiple
 hypothesis adjustment methods given true null effects
 }
 \examples{
-\donttest{
+\dontrun{
 
 res <- run_fwer_sim(
   seed = 123,

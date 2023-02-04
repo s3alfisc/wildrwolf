@@ -6,7 +6,9 @@ I was asked to fix the following issues:
 - I have deleted any statements via "cat()"
 - I have added information on return values
 - I have added links to methods papers in the description 
-- I have switchted dontrun to donttest (the example runs for a long day >>> more than a minute)
+- I have not switched \dontrun to \donttest, as the example is a 'big' simulation that runs for a very long time (rather one hour than one minute). 
+
+Attached are the comments I received: 
 
 Please rather use the Authors@R field and declare Maintainer, Authors
 and Contributors with their appropriate roles with person() calls.
