@@ -160,7 +160,7 @@ run_fwer_sim <- function(
   #'  argument`rho` for more information.}
   #'  
   #' @examples
-  #' \dontrun{
+  #' \donttest{
   #'
   #' res <- run_fwer_sim(
   #'   seed = 123,
