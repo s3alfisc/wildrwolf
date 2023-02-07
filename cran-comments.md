@@ -1,3 +1,16 @@
+## wildrwolf 0.5.1 
+
+I was asked to fix the following issues: 
+
+* Please use only undirected single quotation marks in the description
+text. e.g. "fixest" --> 'fixest'. Done. 
+
+* If your example is executable in general and just takes longer than 5
+sec, please wrap it in \donttest{}. \dontrun{} should really only be
+used if the example is not executable due to some missing software,
+missing API keys, ...
+So, please use \donttest{}. Done. Though, note that the example runs for a very long time. 
+
 ## wildrwolf 0.5 
 
 I was asked to fix the following issues: 

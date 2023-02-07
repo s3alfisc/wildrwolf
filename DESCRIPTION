@@ -2,7 +2,7 @@ Package: wildrwolf
 Type: Package
 Title: Fast Computation of Romano-Wolf Corrected p-Values for
        Linear Regression Models
-Version: 0.5.1
+Version: 0.6
 Authors@R: 
     c(
     person(given = "Alexander",
@@ -25,7 +25,8 @@ Imports:
   fwildclusterboot, 
   dreamerr, 
   fabricatr, 
-  MASS
+  MASS, 
+  dqrng
 URL: https://s3alfisc.github.io/wildrwolf/
 BugReports: https://github.com/s3alfisc/wildrwolf/issues/
 Suggests: 

@@ -89,8 +89,7 @@ rm(list= ls()[!(ls() %in% c('fit','data'))])
 res_rwolf1 <- wildrwolf::rwolf(
   models = fit,
   param = "X1", 
-  B = 9999, 
-  seed = 23
+  B = 9999
 )
 
 pvals <- lapply(fit, function(x) pvalue(x)["X1"]) |> unlist()
@@ -127,8 +126,7 @@ if(requireNamespace("microbenchmark")){
     "Romano-Wolf" = wildrwolf::rwolf(
       models = fit,
       param = "X1", 
-      B = 9999, 
-      seed = 23
+      B = 9999 
     ), 
     times = 1
   )
@@ -233,7 +231,7 @@ models <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2
 ```
 
 ```{r}
-rwolf(models, param = "X1", B = 9999, seed = 123)
+rwolf(models, param = "X1", B = 9999)
 
 ```
 
