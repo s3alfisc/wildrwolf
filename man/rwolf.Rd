@@ -15,6 +15,7 @@ rwolf(
   engine = "R",
   nthreads = 1,
   bootstrap_type = "fnw11",
+  sampling = "standard",
   ...
 )
 }

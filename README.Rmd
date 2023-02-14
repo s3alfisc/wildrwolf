@@ -52,7 +52,12 @@ install.packages('wildrwolf', repos ='https://s3alfisc.r-universe.dev')
 library(wildrwolf)
 library(fixest)
 
+# set seed twice, as wild cluster bootstrap in 
+# fwildclusterboot generates random numbers based on 
+# seed controlled via set.seed() and dqrng::dqset.seed()
+
 set.seed(1412)
+dqrng::dqset.seed(6543)
 
 N <- 1000
 X1 <- rnorm(N)

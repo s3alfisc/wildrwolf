@@ -1,0 +1,88 @@
+---
+title: "Non-Standard Families of Tests"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(wildrwolf)
+```
+
+At the moment, the `rwolf()` function does not support many different types of families of tests. E.g. if you had estimated the following two regression models 
+
+$$
+   Y = \beta_0 + \beta_1 X_1 + \beta_2 X2 + u
+$$
+and 
+
+$$
+   Y = \beta_0 + \beta_3 X_3 + u
+$$
+and wanted to correct the family of hypotheses 
+
+$$H_0: \beta_1 = 0 \text{ vs } H_1: \beta_1 \neq 0$$,
+$$H_0: \beta_2 = 0 \text{ vs } H_1: \beta_2 \neq 0$$,
+$$H_0: \beta_1 + \beta_2 = 0 \text{ vs } H_1: \beta_1 + \beta_2\neq 0$$ and 
+$$H_0: \beta_3 = 0 \text{ vs } H_1: \beta_3 \neq 0.$$
+
+The current API of `rwolf()` does not support such a family of tests. To apply the Romano Wolf corrections for the family of tests, you would have to follow the three steps below. But first, let's simulate some data. 
+
+```{r}
+N <- 1000
+X1 <- rnorm(N) 
+X2 <- rnorm(N) 
+X3 <- rnorm(N)
+Y <- 1 + 0.001 * X1 + 0.001 * X2 + 0.5 *X3 + rnorm(N)
+cluster <- sample(1:20, N, TRUE)
+df <- data.frame(Y = Y, X1 = X1, X2 = X2, X3 = X3, cluster)
+```
+
++ Step 1: Estimate two regression models via `fixest`
+
+```{r}
+library(fixest)
+
+fit1 <- feols(Y ~ X1 + X2, data = df, cluster = ~cluster)
+fit2 <- feols(Y ~ X3, data = df, cluster = ~cluster)
+```
+
++ Step 2: Create bootstrapped t-statistics via `fwildclusterboot::boottest()`. Make sure to reset the random seeds, so that all calls to `boottest()` use the same bootstrap weights
+
+```{r}
+library(fwildclusterboot)
+
+dqrng::dqset.seed(123); set.seed(123)
+boot1 <- boottest(fit1, param = ~X1, B = 9999, clustid = ~cluster)
+dqrng::dqset.seed(123); set.seed(123)
+boot2 <- boottest(fit1, param = ~X2, B = 9999, clustid = ~cluster)
+dqrng::dqset.seed(123); set.seed(123)
+boot3 <- boottest(fit1, param = ~X1 + X2, B = 9999, clustid = ~cluster)
+dqrng::dqset.seed(123); set.seed(123)
+boot4 <- boottest(fit2, param = ~ X3, B = 9999, clustid = ~cluster)
+
+# get the bootstrapped t-stats from boottest
+t_boot <- lapply(list(boot1, boot2, boot3, boot4), 
+       function(x) x[["t_boot"]]) 
+t_boot <- Reduce("cbind",t_boot)
+
+# get the non-bootstrap t-stats from boottest
+t_stat <-  lapply(list(boot1, boot2, boot3, boot4), 
+       function(x) teststat(x)) 
+t_stat <- Reduce("cbind",t_stat)
+
+```
+
++ Step 3: feed the bootstrapped and non-bootstrapped t-statistics into the `get_rwolf_pval()` function
+
+```{r}
+get_rwolf_pval(t_stats = t_stat, boot_t_stats = t_boot)
+```
+
+This returns a vector of pvalues for all hypotheses. 
+
+
