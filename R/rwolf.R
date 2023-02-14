@@ -124,6 +124,7 @@ rwolf <- function(
     engine = "R",
     nthreads = 1,
     bootstrap_type = "fnw11",
+    sampling = "standard",
   ...){
   
 
@@ -136,6 +137,7 @@ rwolf <- function(
   check_arg(B, "integer scalar GT{99}")
   check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
   check_arg(nthreads, "scalar integer")
+  check_arg(sampling, "charin(standard, dqrng)")
   
 
   if (inherits(param, "formula")) {
@@ -174,8 +176,8 @@ rwolf <- function(
   ses <- unlist(
     lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
   # absolute value for t-stats
-  t_stats <- abs(
-    unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  # t_stats <- abs(
+  #   unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
   
   # repeat line: for multiway clustering, it is not clear how many bootstrap 
   # test statistics will be invalied - for oneway, 
@@ -187,6 +189,10 @@ rwolf <- function(
   # boottest() over all models for param
   pb <- txtProgressBar(min = 0, max = S, style = 3)
   
+  # reset global seed state once exciting the function
+  global_seed <- .Random.seed
+  on.exit(set.seed(global_seed))
+  
   res <- 
     lapply(seq_along(models), 
            function(x){
@@ -195,10 +201,13 @@ rwolf <- function(
              # boottest() generate the same weight matrices
              # affects global seed outside of 'rwolf()'!
              
-             seed <- sample.int(.Machine$integer.max, 1L)
-             set.seed(seed)
-             dqrng::dqset.seed(seed)
-             
+             internal_seed <- sample.int(.Machine$integer.max, 1L)
+             set.seed(internal_seed)
+
+             if(sampling == "dqrng"){
+               dqrng::dqset.seed(internal_seed)
+             }
+
              setTxtProgressBar(pb, x)
              clustid <- models[[x]]$call$cluster
              
@@ -212,7 +221,8 @@ rwolf <- function(
                    r = r,
                    engine = engine,
                    p_val_type = p_val_type,
-                   type = weights_type 
+                   type = weights_type, 
+                   sampling = "standard"
                  )
                )
              
@@ -233,8 +243,8 @@ rwolf <- function(
   
   for(x in seq_along(models)){
     # take absolute values of bootstrap t statistics
-    t_stats[x] <- abs(res[[x]]$t_stat)
-    boot_t_stats[[x]] <- abs(res[[x]]$t_boot)     
+    t_stats[x] <- (res[[x]]$t_stat)
+    boot_t_stats[[x]] <- (res[[x]]$t_boot)     
   }
   
   boot_t_stats <- Reduce(cbind, boot_t_stats)

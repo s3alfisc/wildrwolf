@@ -15,6 +15,9 @@ get_rwolf_pval <- function(t_stats, boot_t_stats){
   # package, written and maintained by Martin Spindler
   # code at https://github.com/cran/hdm/blob/master/R/p_adjust.R
   
+  t_stats <- abs(t_stats)
+  boot_t_stats <- abs(boot_t_stats)
+  
   S <- ncol(boot_t_stats)
   B <- nrow(boot_t_stats)
   
