@@ -56,13 +56,13 @@ fit2 <- feols(Y ~ X3, data = df, cluster = ~cluster)
 ```{r}
 library(fwildclusterboot)
 
-dqrng::dqset.seed(123); set.seed(123)
+set.seed(123)
 boot1 <- boottest(fit1, param = ~X1, B = 9999, clustid = ~cluster)
-dqrng::dqset.seed(123); set.seed(123)
+set.seed(123)
 boot2 <- boottest(fit1, param = ~X2, B = 9999, clustid = ~cluster)
-dqrng::dqset.seed(123); set.seed(123)
+set.seed(123)
 boot3 <- boottest(fit1, param = ~X1 + X2, B = 9999, clustid = ~cluster)
-dqrng::dqset.seed(123); set.seed(123)
+set.seed(123)
 boot4 <- boottest(fit2, param = ~ X3, B = 9999, clustid = ~cluster)
 
 # get the bootstrapped t-stats from boottest

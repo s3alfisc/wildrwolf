@@ -1,4 +1,4 @@
-## wildrwolf 0.5.1 
+## wildrwolf 0.6.0
 
 I was asked to fix the following issues: 
 
@@ -10,6 +10,10 @@ sec, please wrap it in \donttest{}. \dontrun{} should really only be
 used if the example is not executable due to some missing software,
 missing API keys, ...
 So, please use \donttest{}. Done. Though, note that the example runs for a very long time. 
+
+* Multiple minor design changes to the package. 
+
+Checked again on github actions and win-devel.
 
 ## wildrwolf 0.5 
 

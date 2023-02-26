@@ -25,8 +25,7 @@ Imports:
   fwildclusterboot, 
   dreamerr, 
   fabricatr, 
-  MASS, 
-  dqrng
+  MASS
 URL: https://s3alfisc.github.io/wildrwolf/
 BugReports: https://github.com/s3alfisc/wildrwolf/issues/
 Suggests: 

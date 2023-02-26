@@ -15,7 +15,6 @@ rwolf(
   engine = "R",
   nthreads = 1,
   bootstrap_type = "fnw11",
-  sampling = "standard",
   ...
 )
 }
@@ -78,27 +77,8 @@ The null hypothesis is always imposed on the bootstrap dgp.
 \section{Setting Seeds and Random Number Generation}{
 
 
-To guarantee reproducibility, please set global random seeds via
-`dqrng::dqset.seed()` AND the standard `set.seed()`. The reason for this  
-is that under the hood, `wildrwolf` calls the `fwildclusterboot`
-package, which - for performance reasons - generates the bootstrap weights, 
-whenever possible, via the `dqrng` package.
-
-Note that because `wildrwolf` calls `boottest()` S times and needs to 
-ensure that for each call, the same weights matrix S is generated, it needs 
-to set seeds internally. Calling either `set.seed()` and 
-`dgrng::dqset.seed()` changes their respective **global** seed states, 
-which in consequence affects random number generation **outside** 
-of the `rwolf()` function. 
-
-In more detail
-+ `set.seed()` controls random number generation when using
-   1) the lean algorithm (via `engine = "R-lean"`) including the
-    heteroskedastic wild bootstrap
-   2) the wild cluster bootstrap via `engine = "R"` with Mammen weights or
-   3) `engine = "WildBootTests.jl"`
-+ `dqrng::dqset.seed()` controls random sampling when `engine = "R"` 
-for Rademacher, Webb or Normal weights
+To guarantee reproducibility, please set a global random seeds via
+`set.seed()`.
 }
 
 \examples{
@@ -107,7 +87,6 @@ library(fixest)
 library(wildrwolf)
 
 set.seed(12345)
-dqrng::dqset.seed(12345)
 
 N <- 1000
 X1 <- rnorm(N)
