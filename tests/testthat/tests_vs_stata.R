@@ -3,7 +3,7 @@ test_that("test wildrwolf against Stata's rwolf", {
   # set to TRUE if you want to run the actual stata 
   # commands via RStata
   run_stata <- FALSE
-  
+  skip_on_cran()
   
   ## create data + run rwolf in R
   library(MASS)
