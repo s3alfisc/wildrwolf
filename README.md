@@ -6,9 +6,10 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/s3alfisc/wildrwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions)
-[![pkgcheck](https://github.com/s3alfisc/wildrwolf/workflows/pkgcheck/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions?query=workflow%3Apkgcheck)
+[![](http://cranlogs.r-pkg.org/badges/last-month/wildrwolf)](https://cran.r-project.org/package=wildrwolf)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![](https://www.r-pkg.org/badges/version/wildrwolf)](https://cran.r-project.org/package=wildrwolf)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 [![Codecov test
 coverage](https://codecov.io/gh/s3alfisc/wildrwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/wildrwolf?branch=main)
@@ -31,10 +32,12 @@ Adding support for multi-way clustering is work in progress.
 
 ## Installation
 
-You can install the development version from
+You can install the package from CRAN and the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
+install.packages("wildrwolf")
+
 # install.packages("devtools")
 devtools::install_github("s3alfisc/wildrwolf")
 
@@ -149,7 +152,7 @@ if(requireNamespace("microbenchmark")){
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 #> Unit: seconds
 #>         expr      min       lq     mean   median       uq      max neval
-#>  Romano-Wolf 5.041018 5.041018 5.041018 5.041018 5.041018 5.041018     1
+#>  Romano-Wolf 3.604916 3.604916 3.604916 3.604916 3.604916 3.604916     1
 ```
 
 ## But does it work? Monte Carlo Experiments
