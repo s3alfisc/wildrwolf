@@ -1,23 +1,22 @@
 #' Romano-Wolf multiple hypotheses adjusted p-values 
 #' 
 #' Function implements the Romano-Wolf multiple hypothesis correction procedure
-#' for objects of type fixest_multi (fixest_multi are objects created by 
-#' `fixest::feols()` that use `feols()` multiple-estimation interface). 
-#' Currently, the command is restricted to two-sided hypotheses and one-way 
-#' clustered standard errors. For the wild cluster bootstrap, 
-#' the null is always imposed.
-#' @param models An object of type fixest_multi or a list of objects of 
-#'        type fixest
+#' for objects of type `fixest_multi` (`fixest_multi` are objects created by 
+#' `fixest::feols()` that use `feols()` multiple-estimation interface).  
+#' The null hypothesis is always imposed on the bootstrap dgp.
+#' 
+#' @param models An object of type `fixest_multi` or a list of objects of 
+#'        type `fixest`, estimated via ordinary least squares (OLS)
 #' @param param The regression parameter to be tested
 #' @param R Hypothesis Vector giving linear combinations of coefficients.
 #'  Must be either NULL or a vector of the same length as `param`. 
 #'  If NULL, a vector of ones of length param.
 #' @param r A numeric. Shifts the null hypothesis 
-#'        H0: param = r vs H1: param != r  
+#'        H0: `param.` = r vs H1: `param.` != r  
 #' @param B The number of bootstrap iterations
 #' @param p_val_type Character vector of length 1. Type of hypothesis test 
-#'        By default "two-tailed". Other options include "equal-tailed", ">"
-#'         (for one-sided tests) and "<" (for two-sided tests). 
+#'        By default "two-tailed". Other options include "equal-tailed"
+#'         (for one-sided tests), ">" and "<" (for two-sided tests). 
 #' @param weights_type character or function. The character string specifies 
 #' the type of bootstrap to use: One of "rademacher", "mammen", "norm"
 #' and "webb". Alternatively, type can be a function(n) for drawing 
@@ -27,12 +26,11 @@
 #' possible combination once (enumeration). 
 #' @param bootstrap_type Either "11", "13", "31", "33", or "fnw11". 
 #' "fnw11" by default. See `?fwildclusterboot::boottest` for more details  
-#' @param seed Integer. Sets the random seed. NULL by default. 
-#' @param engine Should the wild cluster bootstrap run via fwildclusterboot's R 
-#'        implementation or via WildBootTests.jl? 'R' by default. 
-#'        The other option is 'WildBootTests.jl'. Running the bootstrap through 
-#'        WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
-#'        for complex problems (e.g. problems with more than 500 clusters).
+#' @param engine Should the wild cluster bootstrap run via `fwildclusterboot's`
+#'  R implementation or via `WildBootTests.jl`? 'R' by default. 
+#'  The other option is `WildBootTests.jl`. Running the bootstrap through 
+#'  `WildBootTests.jl` might significantly reduce the runtime of `rwolf()` 
+#'  for complex problems (e.g. problems with more than 500 clusters).
 #' @param nthreads Integer. The number of threads to use when running the 
 #' bootstrap.
 #' @param ... additional function values passed to the bootstrap function. 
@@ -53,6 +51,11 @@
 #' \item{t value}{The t statistic of `param` in the respective model.}
 #' \item{Pr(>|t|)}{The uncorrected pvalue for `param` in the respective model.}
 #' \item{RW Pr(>|t|)}{The Romano-Wolf corrected pvalue of hypothesis test for `param` in the respective model.}
+#' 
+#' @section Setting Seeds and Random Number Generation:
+#' 
+#' To guarantee reproducibility, please set a global random seeds via
+#' `set.seed()`.
 #' 
 #' @examples
 #'  
@@ -86,6 +89,8 @@
 #' @references 
 #' Clarke, Romano & Wolf (2019), STATA Journal. 
 #' IZA working paper: https://ftp.iza.org/dp12845.pdf
+#' 
+
 
 rwolf <- function(
     models,
@@ -95,7 +100,6 @@ rwolf <- function(
     r = 0,
     p_val_type = "two-tailed",
     weights_type = "rademacher",
-    seed = NULL, 
     engine = "R",
     nthreads = 1,
     bootstrap_type = "fnw11",
@@ -109,14 +113,10 @@ rwolf <- function(
   check_arg(weights_type, "charin(rademacher, mammen, webb, norm)")
   check_arg(bootstrap_type, "charin(11, 12, 13, 31, 33, fnw11)")
   check_arg(B, "integer scalar GT{99}")
-  check_arg(seed, "integer scalar | NULL")
   check_arg(engine, "charin(R, R-lean, WildBootTests.jl)")
   check_arg(nthreads, "scalar integer")
-  
-  if(is.null(seed)){
-    seed <- sample.int(2147483647L, 1)
-  }
-  
+
+
   if (inherits(param, "formula")) {
     param <- attr(terms(param), "term.labels")
   }
@@ -153,25 +153,35 @@ rwolf <- function(
   ses <- unlist(
     lapply(1:S, function(x) get_stats_fixest(x, stat = "Std. Error")))
   # absolute value for t-stats
-  t_stats <- abs(
-    unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
+  # t_stats <- abs(
+  #   unlist(lapply(1:S, function(x) get_stats_fixest(x, stat = "t value"))))
   
   # repeat line: for multiway clustering, it is not clear how many bootstrap 
   # test statistics will be invalied - for oneway, 
   # all vectors of length(boot_coefs) \leq B
   
   boot_coefs <- boot_ses <- matrix(NA, B, S) 
+  t_stats <- rep(NA, S)
   boot_t_stats <- list()
   
   # boottest() over all models for param
   pb <- txtProgressBar(min = 0, max = S, style = 3)
   
+  # reset global seed state once exciting the function
+  global_seed <- .Random.seed
+  on.exit(set.seed(global_seed))
+  
+  internal_seed <- sample.int(.Machine$integer.max, 1L)
+  
   res <- 
     lapply(seq_along(models), 
            function(x){
              
-             setTxtProgressBar(pb, x)
+             # set seed, to guarantee that all S calls to 
+             # boottest() generate the same weight matrices
+             # affects global seed outside of 'rwolf()'!
              
+             set.seed(internal_seed)
              clustid <- models[[x]]$call$cluster
              
              boottest_quote <-
@@ -185,7 +195,7 @@ rwolf <- function(
                    engine = engine,
                    p_val_type = p_val_type,
                    type = weights_type, 
-                   seed = seed
+                   sampling = "standard"
                  )
                )
              
@@ -198,15 +208,20 @@ rwolf <- function(
              }
              
              suppressMessages(
-               boottest_eval <- eval(boottest_quote)
+              boottest_eval <- 
+                  eval(boottest_quote)
              )
+             
+             setTxtProgressBar(pb, x)
            
+             boottest_eval
+             
            })
   
   for(x in seq_along(models)){
     # take absolute values of bootstrap t statistics
-    t_stats[x] <- abs(res[[x]]$t_stat)
-    boot_t_stats[[x]] <- abs(res[[x]]$t_boot)     
+    t_stats[x] <- (res[[x]]$t_stat)
+    boot_t_stats[[x]] <- (res[[x]]$t_boot)     
   }
   
   boot_t_stats <- Reduce(cbind, boot_t_stats)

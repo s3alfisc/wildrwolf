@@ -9,11 +9,15 @@ get_rwolf_pval <- function(t_stats, boot_t_stats){
   #' @param boot_t_stats A (B x S) matrix containing the 
   #'        bootstrapped t-statistics 
   #'        
-  #' @return A vector of Romano-Wolf corrected p-values        
+  #' @return A vector of Romano-Wolf corrected p-values     
+  #' @export    
   
   # note: this part very closely follows the p_adjust function from the hdm
   # package, written and maintained by Martin Spindler
   # code at https://github.com/cran/hdm/blob/master/R/p_adjust.R
+  
+  t_stats <- abs(t_stats)
+  boot_t_stats <- abs(boot_t_stats)
   
   S <- ncol(boot_t_stats)
   B <- nrow(boot_t_stats)

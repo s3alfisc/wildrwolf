@@ -6,9 +6,10 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/s3alfisc/wildrwolf/workflows/R-CMD-check/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions)
-[![pkgcheck](https://github.com/s3alfisc/wildrwolf/workflows/pkgcheck/badge.svg)](https://github.com/s3alfisc/wildrwolf/actions?query=workflow%3Apkgcheck)
+[![](http://cranlogs.r-pkg.org/badges/last-month/wildrwolf)](https://cran.r-project.org/package=wildrwolf)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![](https://www.r-pkg.org/badges/version/wildrwolf)](https://cran.r-project.org/package=wildrwolf)
 ![runiverse-package](https://s3alfisc.r-universe.dev/badges/wildrwolf)
 [![Codecov test
 coverage](https://codecov.io/gh/s3alfisc/wildrwolf/branch/main/graph/badge.svg)](https://app.codecov.io/gh/s3alfisc/wildrwolf?branch=main)
@@ -31,10 +32,12 @@ Adding support for multi-way clustering is work in progress.
 
 ## Installation
 
-You can install the development version from
+You can install the package from CRAN and the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
+install.packages("wildrwolf")
+
 # install.packages("devtools")
 devtools::install_github("s3alfisc/wildrwolf")
 
@@ -87,8 +90,7 @@ rm(list= ls()[!(ls() %in% c('fit','data'))])
 res_rwolf1 <- wildrwolf::rwolf(
   models = fit,
   param = "X1", 
-  B = 9999, 
-  seed = 23
+  B = 9999
 )
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 
@@ -99,12 +101,12 @@ res_rwolf1
 #>   model     Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     1    0.9896609 0.04204902   23.53588  8.811393e-98      0.0001
 #> 2     2    0.9713667 0.03201663   30.33945 9.318861e-144      0.0001
-#> 3     3 -0.007682607 0.04222391 -0.1819492     0.8556595      0.9798
-#> 4     4  -0.02689601 0.03050616 -0.8816584     0.3781741      0.8500
+#> 3     3 -0.007682607 0.04222391 -0.1819492     0.8556595      0.9786
+#> 4     4  -0.02689601 0.03050616 -0.8816584     0.3781741      0.7402
 #> 5     5     0.411529 0.04299497   9.571561    7.9842e-21      0.0001
 #> 6     6    0.3925661 0.03096423   12.67805  2.946569e-34      0.0001
-#> 7     7    0.0206361 0.04405654  0.4684003     0.6396006      0.9542
-#> 8     8  0.001657765 0.03337464 0.04967138     0.9603942      0.9798
+#> 7     7    0.0206361 0.04405654  0.4684003     0.6396006      0.9112
+#> 8     8  0.001657765 0.03337464 0.04967138     0.9603942      0.9786
 ```
 
 ## Example II
@@ -125,8 +127,8 @@ res_rwolf2
 #>   model     Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     1    0.9896609 0.04341633   22.79467  6.356963e-93      0.0001
 #> 2     2    0.9713667 0.03186495   30.48386 9.523796e-145      0.0001
-#> 3     3 -0.007682607 0.04403736 -0.1744566      0.861542      0.8567
-#> 4     4  -0.02689601 0.03130345 -0.8592027     0.3904352      0.6163
+#> 3     3 -0.007682607 0.04403736 -0.1744566      0.861542      0.8568
+#> 4     4  -0.02689601 0.03130345 -0.8592027     0.3904352      0.5439
 ```
 
 ## Performance
@@ -141,8 +143,7 @@ if(requireNamespace("microbenchmark")){
     "Romano-Wolf" = wildrwolf::rwolf(
       models = fit,
       param = "X1", 
-      B = 9999, 
-      seed = 23
+      B = 9999 
     ), 
     times = 1
   )
@@ -151,7 +152,7 @@ if(requireNamespace("microbenchmark")){
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 #> Unit: seconds
 #>         expr      min       lq     mean   median       uq      max neval
-#>  Romano-Wolf 3.621236 3.621236 3.621236 3.621236 3.621236 3.621236     1
+#>  Romano-Wolf 3.604916 3.604916 3.604916 3.604916 3.604916 3.604916     1
 ```
 
 ## But does it work? Monte Carlo Experiments
@@ -208,9 +209,9 @@ at both the 5 and 10% significance level.
 ``` r
 res
 #>                 reject_5 reject_10 rho
-#> fit_pvalue         0.282     0.502 0.5
-#> fit_pvalue_holm    0.061     0.104 0.5
-#> fit_padjust_rw     0.059     0.105 0.5
+#> fit_pvalue         0.999     0.999 0.5
+#> fit_pvalue_holm    0.000     0.000 0.5
+#> fit_padjust_rw     0.000     0.000 0.5
 ```
 
 ## Comparison with Stata’s rwolf package
@@ -260,11 +261,11 @@ models <- feols(c(Y1, Y2, Y3, Y4) ~ X1 + X2
 ```
 
 ``` r
-rwolf(models, param = "X1", B = 9999, seed = 123)
+rwolf(models, param = "X1", B = 9999)
 #>   |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%
 #>   model    Estimate Std. Error    t value      Pr(>|t|) RW Pr(>|t|)
 #> 1     1   0.9713667 0.03201663   30.33945 9.318861e-144      0.0001
-#> 2     2 -0.02689601 0.03050616 -0.8816584     0.3781741      0.6082
+#> 2     2 -0.02689601 0.03050616 -0.8816584     0.3781741      0.5922
 #> 3     3   0.3925661 0.03096423   12.67805  2.946569e-34      0.0001
-#> 4     4 0.001657765 0.03337464 0.04967138     0.9603942      0.9600
+#> 4     4 0.001657765 0.03337464 0.04967138     0.9603942      0.9618
 ```

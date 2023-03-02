@@ -12,7 +12,6 @@ rwolf(
   r = 0,
   p_val_type = "two-tailed",
   weights_type = "rademacher",
-  seed = NULL,
   engine = "R",
   nthreads = 1,
   bootstrap_type = "fnw11",
@@ -20,8 +19,8 @@ rwolf(
 )
 }
 \arguments{
-\item{models}{An object of type fixest_multi or a list of objects of 
-type fixest}
+\item{models}{An object of type `fixest_multi` or a list of objects of 
+type `fixest`, estimated via ordinary least squares (OLS)}
 
 \item{param}{The regression parameter to be tested}
 
@@ -32,11 +31,11 @@ Must be either NULL or a vector of the same length as `param`.
 If NULL, a vector of ones of length param.}
 
 \item{r}{A numeric. Shifts the null hypothesis 
-H0: param = r vs H1: param != r}
+H0: `param.` = r vs H1: `param.` != r}
 
 \item{p_val_type}{Character vector of length 1. Type of hypothesis test 
-By default "two-tailed". Other options include "equal-tailed", ">"
- (for one-sided tests) and "<" (for two-sided tests).}
+By default "two-tailed". Other options include "equal-tailed"
+ (for one-sided tests), ">" and "<" (for two-sided tests).}
 
 \item{weights_type}{character or function. The character string specifies 
 the type of bootstrap to use: One of "rademacher", "mammen", "norm"
@@ -46,12 +45,10 @@ distribution, if the number of replications B exceeds the number of possible
 draw ombinations, 2^(#number of clusters), then `boottest()` will use each 
 possible combination once (enumeration).}
 
-\item{seed}{Integer. Sets the random seed. NULL by default.}
-
-\item{engine}{Should the wild cluster bootstrap run via fwildclusterboot's R 
-implementation or via WildBootTests.jl? 'R' by default. 
-The other option is 'WildBootTests.jl'. Running the bootstrap through 
-WildBootTests.jl might significantly reduce the runtime of `rwolf()` 
+\item{engine}{Should the wild cluster bootstrap run via `fwildclusterboot's`
+R implementation or via `WildBootTests.jl`? 'R' by default. 
+The other option is `WildBootTests.jl`. Running the bootstrap through 
+`WildBootTests.jl` might significantly reduce the runtime of `rwolf()` 
 for complex problems (e.g. problems with more than 500 clusters).}
 
 \item{nthreads}{Integer. The number of threads to use when running the 
@@ -73,12 +70,17 @@ A data.frame containing the following columns:
 }
 \description{
 Function implements the Romano-Wolf multiple hypothesis correction procedure
-for objects of type fixest_multi (fixest_multi are objects created by 
-`fixest::feols()` that use `feols()` multiple-estimation interface). 
-Currently, the command is restricted to two-sided hypotheses and one-way 
-clustered standard errors. For the wild cluster bootstrap, 
-the null is always imposed.
+for objects of type `fixest_multi` (`fixest_multi` are objects created by 
+`fixest::feols()` that use `feols()` multiple-estimation interface).  
+The null hypothesis is always imposed on the bootstrap dgp.
 }
+\section{Setting Seeds and Random Number Generation}{
+
+
+To guarantee reproducibility, please set a global random seeds via
+`set.seed()`.
+}
+
 \examples{
  
 library(fixest)

@@ -45,21 +45,18 @@ for the Holm and Romano & Wolf Methods multiple
 hypothesis adjustment methods given true null effects
 }
 \examples{
-\dontrun{
+\donttest{
 
+# N, B, n_sims, chosen so that the example runs quicker
+# for a higher quality simulation, increase all values
 res <- run_fwer_sim(
   seed = 123,
-  n_sims = 1000,
-  B = 4999,
-  N = 1000,
-  s = 10
+  n_sims = 10,
+  B = 199,
+  N = 100,
+  s = 10, 
+  rho = 0
 )
-res
-
-# >                 reject_5 reject_10 rho
-# > fit_pvalue         0.282     0.502 0.5
-# > fit_pvalue_holm    0.061     0.104 0.5
-# > fit_padjust_rw     0.059     0.105 0.5
 
 }
 }
