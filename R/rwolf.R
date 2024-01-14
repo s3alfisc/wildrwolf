@@ -200,7 +200,11 @@ rwolf <- function(
                )
              
              if(!is.null(clustid)){
-               boottest_quote$clustid <- formula(clustid)
+               if(is.character(clustid)){
+                 boottest_quote$clustid <- formula(paste0("~", clustid))
+               } else {
+                 boottest_quote$clustid <- formula(clustid)
+               }
              }
              
              if(!is.null(bootstrap_type)){

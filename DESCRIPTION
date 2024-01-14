@@ -2,7 +2,7 @@ Package: wildrwolf
 Type: Package
 Title: Fast Computation of Romano-Wolf Corrected p-Values for
        Linear Regression Models
-Version: 0.6.1
+Version: 0.7.0
 Authors@R: 
     c(
     person(given = "Alexander",
@@ -19,7 +19,7 @@ Description: Fast Routines to Compute Romano-Wolf corrected p-Values
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: 
   fixest, 
   fwildclusterboot, 
